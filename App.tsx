@@ -37,7 +37,8 @@ function PatchedText(props: RNTextProps) {
 SplashScreen.preventAutoHideAsync()
 
 function IgniteApp() {
-  return <App hideSplashScreen={SplashScreen.hideAsync} />
+  return <App hideSplashScreen={() => SplashScreen.hideAsync().then(() => true)} />
 }
+
 
 export default IgniteApp
