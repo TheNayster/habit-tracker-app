@@ -124,8 +124,8 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
         })}
       >
         <Tab.Screen name="HomeStack" component={HomeStack} />
-        <Tab.Screen name="Statistics" component={Screens.StatisticsScreen} />
-        <Tab.Screen name="SettingsStack" component={SettingsStack} />
+        {/*<Tab.Screen name="Statistics" component={Screens.StatisticsScreen} />*/}
+        {/*<Tab.Screen name="SettingsStack" component={SettingsStack} />*/}
       </Tab.Navigator>
     </NavigationContainer>
   )

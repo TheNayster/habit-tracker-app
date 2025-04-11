@@ -57,18 +57,26 @@ export interface TextProps extends RNTextProps {
  */
 export function Text(props: TextProps) {
   const { weight, size, tx, txt, txOptions, text, children, style: $styleOverride, ...rest } = props
+  console.log("Text component rendered with size:", size)
+
 
   const i18nText = tx && translate(tx, txOptions)
   const content = i18nText || text || children
 
   const preset: Presets = props.preset ?? "default"
-  const $styles: StyleProp<TextStyle> = [
-    $rtlStyle,
-    $presets[preset],
-    weight && $fontWeightStyles[weight],
-    size && $sizeStyles[size],
-    $styleOverride,
-  ]
+  const validSize = size && $sizeStyles[size as Sizes] ? size : undefined
+  if (__DEV__ && size && !$sizeStyles[size as Sizes]) {
+    console.warn(`⚠️ Invalid size "${size}" passed to <Text>. Allowed: ${Object.keys($sizeStyles).join(", ")}`)
+  }
+  
+const $styles: StyleProp<TextStyle> = [
+  $rtlStyle,
+  $presets[preset],
+  weight && $fontWeightStyles[weight],
+  validSize && $sizeStyles[validSize as Sizes],
+  $styleOverride,
+]
+
 
   return (
     <RNText {...rest} style={$styles}>

@@ -17,7 +17,9 @@
       "fallbackToCacheTimeout": 0
     },
     "jsEngine": "hermes",
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "android": {
       "icon": "./assets/images/app-icon-android-legacy.png",
       "package": "com.habittracker",
@@ -40,6 +42,9 @@
         "tabletImage": "./assets/images/splash-logo-ios-tablet.png",
         "resizeMode": "contain",
         "backgroundColor": "#191015"
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "web": {
@@ -57,11 +62,11 @@
         "expo-build-properties",
         {
           "ios": {
-            "newArchEnabled": false,
+            "newArchEnabled": true,
             "flipper": false
           },
           "android": {
-            "newArchEnabled": false
+            "newArchEnabled": true
           }
         }
       ],
@@ -72,9 +77,10 @@
     },
     "extra": {
       "eas": {
-        "projectId": "f12845f7-c2fb-44ea-97e8-db2816a8be8a"
+        "projectId": "dfc39f5c-47b2-4a68-a8ee-3e7d8a474f83"
       }
-    }
+    },
+    "owner": "nayster"
   },
   "ignite": {
     "version": "9.6.2"
