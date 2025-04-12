@@ -61,6 +61,7 @@
     "react-native-circular-progress": "^1.4.0",
     "react-native-date-picker": "4.2.1",
     "react-native-gesture-handler": "~2.20.2",
+    "react-native-get-random-values": "^1.11.0",
     "react-native-gifted-charts": "^1.4.10",
     "react-native-paper": "^5.12.3",
     "react-native-reanimated": "~3.16.1",
@@ -69,7 +70,8 @@
     "react-native-svg": "15.8.0",
     "react-native-web": "~0.19.6",
     "reanimated-color-picker": "^4.0.1",
-    "rn-emoji-keyboard": "^1.6.1"
+    "rn-emoji-keyboard": "^1.6.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

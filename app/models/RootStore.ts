@@ -1,9 +1,11 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import { HabitStore } from "./HabitStore"
 
 /**
  * A RootStore model.
  */
-export const RootStoreModel = types.model("RootStore").props({
+export const RootStoreModel = types.model("RootStore", {
+  habitStore: types.optional(HabitStore, {} as any), // ✅ Allows booting from nothing
 })
 
 /**

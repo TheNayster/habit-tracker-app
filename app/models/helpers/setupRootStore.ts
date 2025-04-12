@@ -10,7 +10,7 @@
  * @refresh reset
  */
 import { applySnapshot, IDisposer, onSnapshot } from "mobx-state-tree"
-import { RootStore, RootStoreSnapshot } from "../RootStore"
+import { RootStore, RootStoreSnapshot, RootStoreModel } from "../RootStore"
 import * as storage from "../../utils/storage"
 
 /**
@@ -22,18 +22,28 @@ const ROOT_STATE_STORAGE_KEY = "root-v1"
  * Setup the root state.
  */
 let _disposer: IDisposer | undefined
-export async function setupRootStore(rootStore: RootStore) {
-  let restoredState: RootStoreSnapshot | undefined | null
+export async function setupRootStore(): Promise<{
+  rootStore: RootStore
+  restoredState: RootStoreSnapshot | undefined
+  unsubscribe: () => void
+}> {
+  // ✅ Create the store instance with empty habitStore
+  const rootStore = RootStoreModel.create({
+    habitStore: {
+      habits: [],
+    },
+  })
+
+  let restoredState: RootStoreSnapshot | undefined
 
   try {
-    // load the last known state from AsyncStorage
-    restoredState = ((await storage.load(ROOT_STATE_STORAGE_KEY)) ?? {}) as RootStoreSnapshot
-    applySnapshot(rootStore, restoredState)
-  } catch (e) {
-    // if there's any problems loading, then inform the dev what happened
-    if (__DEV__) {
-      if (e instanceof Error) console.error(e.message)
+    const snapshot = (await storage.load(ROOT_STATE_STORAGE_KEY)) as RootStoreSnapshot | null
+  if (snapshot) {
+    applySnapshot(rootStore, snapshot)
+    restoredState = snapshot
     }
+  } catch (e) {
+    if (__DEV__ && e instanceof Error) console.error(e.message)
   }
 
   // stop tracking state changes if we've already setup
