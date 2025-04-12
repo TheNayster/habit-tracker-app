@@ -27,79 +27,12 @@ import { days } from "app/screens/create-new-habit"
 import { HomeNavProps, HomeStackScreenProps } from "app/navigators/types"
 import { $tabBarStyles } from "app/navigators/styles"
 
-const checkIns = [
-  {
-    emoji: "💧",
-    title: "Water",
-    name: "glass",
-    amount: "3/4",
-    color: colors.palette.accent400,
-    fill: 30,
-  },
-  {
-    emoji: "😴",
-    title: "Sleep",
-    name: "hours",
-    amount: "4/6",
-    color: colors.palette.secondary400,
-    fill: 80,
-  },
-  {
-    emoji: "🧘",
-    title: "Meditation",
-    name: "min",
-    amount: "10/15",
-    color: colors.palette.neutral500,
-    fill: 60,
-  },
-]
-
-interface HabitType {
-  id: number
-  emoji: string
-  name: string
-  time: string
-  finished: boolean
-}
-
-export const tasks: HabitType[] = [
-  {
-    id: 1,
-    emoji: "🧘",
-    name: "Meditation",
-    time: "08:00 AM",
-    finished: true,
-  },
-  {
-    id: 2,
-    emoji: "🌱",
-    name: "Plant based diet",
-    time: "10:00 AM",
-    finished: false,
-  },
-  {
-    id: 3,
-    emoji: "💻",
-    name: "Contribute to open source",
-    time: "10:30 AM",
-    finished: false,
-  },
-  {
-    id: 4,
-    emoji: "🏃",
-    name: "Workout",
-    time: "08:00 PM",
-    finished: true,
-  },
-]
 
 interface DayCardProps {
   day: string
   date: string
   progress: number
 }
-
-const $dayCard: ViewStyle = { gap: 8 }
 
 const DayCard = ({ day, date, progress }: DayCardProps) => (
   <View style={$dayCard}>
