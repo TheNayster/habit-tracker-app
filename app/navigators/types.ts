@@ -9,6 +9,7 @@ export type HomeStackParamList = {
   EditHabit: {
     habitId: number
   }
+  Calendar: undefined
 }
 
 export type SettingsStackParamList = {

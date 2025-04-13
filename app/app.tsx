@@ -30,6 +30,8 @@ import { customFontsToLoad } from "./theme"
 import Config from "./config"
 import { ViewStyle } from "react-native"
 import { View } from "react-native"
+import Toast from "react-native-toast-message"
+
 
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
@@ -107,6 +109,7 @@ function App(props: AppProps) {
             initialState={initialNavigationState}
             onStateChange={onNavigationStateChange}
           />
+          <Toast />
         </View>
       </ErrorBoundary>
     </SafeAreaProvider>

@@ -20,6 +20,7 @@ import { $tabBarStyles } from "app/navigators/styles"
 import { PersonalInfosScreen } from "app/screens/profile/personal-infos"
 import { EditPersonalInfosScreen } from "app/screens/profile/edit-personal-infos"
 import { EditPasswordScreen } from "app/screens/profile/edit-password"
+import { CalendarScreen } from "app/screens/CalendarScreen"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -49,12 +50,8 @@ const HomeStack = observer(function HomeStack() {
     <Stack.Navigator screenOptions={{ headerShown: false, navigationBarColor: colors.background }}>
       {/* @ts-expect-error type props error */}
       <Stack.Screen name="Home" component={Screens.HomeScreen} />
-      {/* @ts-expect-error type props error */}
       <Stack.Screen name="CreateHabit" component={Screens.CreateHabitScreen} />
-      {/* @ts-expect-error type props error */}
-      <Stack.Screen name="CreateNewHabit" component={Screens.CreateNewHabitScreen} />
-      {/* @ts-expect-error type props error */}
-      <Stack.Screen name="EditHabit" component={Screens.EditHabitScreen} />
+      <Stack.Screen name="Calendar" component={CalendarScreen} />
     </Stack.Navigator>
   )
 })

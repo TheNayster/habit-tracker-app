@@ -6,6 +6,10 @@ export const HabitModel = types.model("Habit", {
   name: types.string,
   time: types.string,
   finished: types.boolean,
+  repeatDays: types.array(types.string), 
+  dailyTarget: types.number,
+  progress: types.optional(types.number, 0),
+  lastUpdated: types.optional(types.string, ""), // ISO date
 })
 
 export type HabitType = typeof HabitModel.Type

@@ -1,9 +1,9 @@
 {
-  "name": "Habit Tracker",
-  "displayName": "Habit Tracker",
+  "name": "Things To Do",
+  "displayName": "Things To Do",
   "expo": {
-    "name": "Habit Tracker",
-    "slug": "habittracker",
+    "name": "Things To Do",
+    "slug": "things-to-do",
     "scheme": "habittracker",
     "version": "1.0.0",
     "orientation": "portrait",

@@ -22,7 +22,7 @@ import { HomeNavProps, HomeStackScreenProps } from "app/navigators/types"
 import { $tabBarStyles } from "app/navigators/styles"
 import { useStores } from "app/models/helpers/useStores"
 import { HabitType } from "app/models/HabitModel"
-
+import { isTodayInRepeatDays } from "../utils/date"
 
 
 interface DayCardProps {
@@ -54,11 +54,16 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
   return (
     <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={{ paddingHorizontal: spacing.lg, gap: spacing.xl, paddingBottom: 60 }}>
       <BottomSheetModalProvider>
+        
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
             <Image source={require("../../assets/images/avatar-2.png")} style={{ width: 50, height: 50 }} />
             <Text text="Today" size="xl" weight="bold" />
           </View>
+          <TouchableOpacity onPress={() => navigation.navigate("Calendar")}>
+          <MaterialCommunityIcons name="calendar-month-outline" size={28} color={colors.text} />
+        </TouchableOpacity>
+          
           <View style={{ backgroundColor: colors.palette.primary600, width: 40, height: 40, alignItems: "center", justifyContent: "center", borderRadius: 99 }}>
             <MaterialCommunityIcons
               name="plus"
@@ -137,9 +142,12 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
         <View style={{ gap: spacing.md }}>
           <Text tx="homeScreen.today" preset="subheading" />
           <View style={{ gap: 10 }}>
-            {habitStore.habits.map((task, idx) => (
-              <Habit key={`${task.id}-${idx}`} task={task} navigation={navigation} />
+            {habitStore.habits
+              .filter(habit => isTodayInRepeatDays(habit.repeatDays))
+              .map((task, idx) => (
+                <Habit key={`${task.id}-${idx}`} task={task} navigation={navigation} />
             ))}
+
           </View>
         </View>
       </BottomSheetModalProvider>
@@ -156,6 +164,7 @@ function Habit({ task, navigation }: HabitProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const { habitStore } = useStores()
+
 
   const handleOpenSheet = useCallback(() => {
     bottomSheetRef.current?.present()
@@ -200,12 +209,27 @@ function Habit({ task, navigation }: HabitProps) {
             <Text text={`start at ${task.time}`} size="xs" style={{ color: colors.textDim }} />
           </View>
         </View>
-        <Toggle variant="checkbox" inputOuterStyle={{
-          borderColor: colors.text,
-          backgroundColor: colors.palette.neutral100,
-          borderWidth: 1,
-        }} value={task.finished} onValueChange={() => habitStore.toggleHabit(task.id)} />
+        <View style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 10,
+          backgroundColor: colors.palette.neutral200,
+          paddingVertical: spacing.xs,
+          paddingHorizontal: spacing.sm,
+          borderRadius: spacing.sm,
+        }}>
+          <TouchableOpacity onPress={() => habitStore.decrementHabit(task.id)}>
+            <MaterialCommunityIcons name="minus" size={20} color={colors.text} />
+          </TouchableOpacity>
+          <Text text={`${task.progress} / ${task.dailyTarget}`} size="sm" />
+          <TouchableOpacity onPress={() => habitStore.incrementHabit(task.id)}>
+            <MaterialCommunityIcons name="plus" size={20} color={colors.text} />
+          </TouchableOpacity>
+        </View>
+
+        
       </TouchableOpacity>
+      
     </>
   )
 }

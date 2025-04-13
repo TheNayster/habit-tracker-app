@@ -1,3 +1,4 @@
+
 import { types, SnapshotIn } from "mobx-state-tree"
 import { HabitModel } from "./HabitModel"
 import { withSetPropAction } from "./helpers/withSetPropAction"
@@ -78,6 +79,29 @@ export const HabitStore = types
     },
     removeCheckIn(id: string): void {
       store.checkIns.replace(store.checkIns.filter((c) => c.id !== id))
+    },
+    resetHabitsIfDateChanged(): void {
+      const today = new Date().toISOString().split("T")[0]
+      store.habits.forEach((habit) => {
+        if (habit.lastUpdated !== today) {
+          habit.progress = 0
+          habit.lastUpdated = today
+        }
+      })
+    },
+    incrementHabit(id: string): void {
+      const habit = store.habits.find((h) => h.id === id)
+      if (habit && habit.progress < habit.dailyTarget) {
+        habit.progress += 1
+        habit.lastUpdated = new Date().toISOString().split("T")[0]
+      }
+    },
+    decrementHabit(id: string): void {
+      const habit = store.habits.find((h) => h.id === id)
+      if (habit && habit.progress > 0) {
+        habit.progress -= 1
+        habit.lastUpdated = new Date().toISOString().split("T")[0]
+      }
     },
   }))
 
