@@ -1,61 +1,49 @@
 /**
- * This file is where we do "rehydration" of your RootStore from AsyncStorage.
- * This lets you persist your state between app launches.
- *
- * Navigation state persistence is handled in navigationUtilities.tsx.
- *
- * Note that Fast Refresh doesn't play well with this file, so if you edit this,
- * do a full refresh of your app instead.
- *
  * @refresh reset
  */
-import { applySnapshot, IDisposer, onSnapshot } from "mobx-state-tree"
+import { applySnapshot } from "mobx-state-tree"
 import { RootStore, RootStoreSnapshot, RootStoreModel } from "../RootStore"
+//import { storage } from "../../utils/storage/mmkv"
 import * as storage from "../../utils/storage"
+import { persistHabitStore } from "./persistHabitStore"
+import { syncNotifications } from "app/utils/syncNotifications"
 
-/**
- * The key we'll be saving our state as within async storage.
- */
 const ROOT_STATE_STORAGE_KEY = "root-v1"
 
-/**
- * Setup the root state.
- */
-let _disposer: IDisposer | undefined
+let _rootStore: RootStore
+
 export async function setupRootStore(): Promise<{
   rootStore: RootStore
   restoredState: RootStoreSnapshot | undefined
-  unsubscribe: () => void
 }> {
-  // ✅ Create the store instance with empty habitStore
-  const rootStore = RootStoreModel.create({
+  _rootStore = RootStoreModel.create({
     habitStore: {
       habits: [],
+      checkIns: [],
     },
   })
 
   let restoredState: RootStoreSnapshot | undefined
 
   try {
-    const snapshot = (await storage.load(ROOT_STATE_STORAGE_KEY)) as RootStoreSnapshot | null
-  if (snapshot) {
-    applySnapshot(rootStore, snapshot)
-    restoredState = snapshot
-    }
-  } catch (e) {
-    if (__DEV__ && e instanceof Error) console.error(e.message)
+    /*const raw = storage.getString(ROOT_STATE_STORAGE_KEY)
+    if (raw) {
+      const snapshot = JSON.parse(raw)
+      applySnapshot(_rootStore, snapshot)
+      restoredState = snapshot*/
+
+      const snapshot = (await storage.load(ROOT_STATE_STORAGE_KEY)) as RootStoreSnapshot | null
+      if (snapshot) {
+        applySnapshot(_rootStore, snapshot)
+        restoredState = snapshot
+      }
+  } catch (err) {
+    if (__DEV__ && err instanceof Error) console.error("❌ Rehydration error:", err.message)
   }
 
-  // stop tracking state changes if we've already setup
-  if (_disposer) _disposer()
+  // 🚀 Start syncing and persisting just the habitStore
+  persistHabitStore(_rootStore.habitStore)
+  syncNotifications(_rootStore.habitStore)
 
-  // track changes & save to AsyncStorage
-  _disposer = onSnapshot(rootStore, (snapshot) => storage.save(ROOT_STATE_STORAGE_KEY, snapshot))
-
-  const unsubscribe = () => {
-    _disposer?.()
-    _disposer = undefined
-  }
-
-  return { rootStore, restoredState, unsubscribe }
+  return { rootStore: _rootStore, restoredState }
 }

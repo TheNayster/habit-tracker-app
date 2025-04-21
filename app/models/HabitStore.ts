@@ -5,6 +5,7 @@ import { withSetPropAction } from "./helpers/withSetPropAction"
 import { v4 as uuidv4 } from "uuid"
 import { format, subDays } from "date-fns"
 
+
 const CheckInModel = types
   .model("CheckIn", {
     id: types.identifier,
@@ -129,4 +130,5 @@ export const HabitStore = types
     },
   }))
 
-export type HabitStoreType = typeof HabitStore.Type
+ 
+  
