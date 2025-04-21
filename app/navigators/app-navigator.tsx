@@ -21,6 +21,7 @@ import { PersonalInfosScreen } from "app/screens/profile/personal-infos"
 import { EditPersonalInfosScreen } from "app/screens/profile/edit-personal-infos"
 import { EditPasswordScreen } from "app/screens/profile/edit-password"
 import { CalendarScreen } from "app/screens/CalendarScreen"
+import { EditHabitScreen } from "app/screens/edit-habit"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -52,6 +53,7 @@ const HomeStack = observer(function HomeStack() {
       <Stack.Screen name="Home" component={Screens.HomeScreen} />
       <Stack.Screen name="CreateHabit" component={Screens.CreateHabitScreen} />
       <Stack.Screen name="Calendar" component={CalendarScreen} />
+      <Stack.Screen name="EditHabit" component={EditHabitScreen} />
     </Stack.Navigator>
   )
 })

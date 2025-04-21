@@ -73,7 +73,8 @@
     "react-native-web": "~0.19.6",
     "reanimated-color-picker": "^4.0.1",
     "rn-emoji-keyboard": "^1.6.1",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "expo-notifications": "~0.29.14"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

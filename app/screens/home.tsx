@@ -10,7 +10,7 @@ import {
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { AnimatedCircularProgress } from "react-native-circular-progress"
 
-import { Card, Text, Toggle, Screen } from "app/components"
+import { Card, Text, Screen } from "app/components"
 import layout from "app/utils/layout"
 import {
   BottomSheetModal,
@@ -23,7 +23,6 @@ import { $tabBarStyles } from "app/navigators/styles"
 import { useStores } from "app/models/helpers/useStores"
 import { HabitType } from "app/models/HabitModel"
 import { isTodayInRepeatDays } from "../utils/date"
-
 
 interface DayCardProps {
   day: string
@@ -50,6 +49,7 @@ interface HomeScreenProps extends HomeStackScreenProps<"Home"> {}
 
 export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ navigation }) {
   const { habitStore } = useStores()
+  
 
   return (
     <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={{ paddingHorizontal: spacing.lg, gap: spacing.xl, paddingBottom: 60 }}>
@@ -165,7 +165,6 @@ function Habit({ task, navigation }: HabitProps) {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const { habitStore } = useStores()
 
-
   const handleOpenSheet = useCallback(() => {
     bottomSheetRef.current?.present()
     setIsSheetOpen(true)
@@ -226,8 +225,15 @@ function Habit({ task, navigation }: HabitProps) {
             <MaterialCommunityIcons name="plus" size={20} color={colors.text} />
           </TouchableOpacity>
         </View>
-
-        
+        <TouchableOpacity
+            style={{ marginLeft: spacing.sm }}
+            onPress={() => navigation.navigate("HomeStack", {
+                screen: "EditHabit",
+                params: { habitId: task.id },
+              })
+              }>
+            <MaterialCommunityIcons name="pencil-outline" size={20} color={colors.tint} />
+          </TouchableOpacity>
       </TouchableOpacity>
       
     </>

@@ -5,7 +5,6 @@ import { withSetPropAction } from "./helpers/withSetPropAction"
 import { v4 as uuidv4 } from "uuid"
 import { format, subDays } from "date-fns"
 
-// ✅ CheckIn model separated out
 const CheckInModel = types
   .model("CheckIn", {
     id: types.identifier,
@@ -62,9 +61,7 @@ export const HabitStore = types
     },
     toggleHabit(id: string): void {
       const habit = store.habits.find((h) => h.id === id)
-      if (habit) {
-        habit.finished = !habit.finished
-      }
+      if (habit) habit.finished = !habit.finished
     },
     removeHabit(id: string): void {
       store.habits.replace(store.habits.filter((h) => h.id !== id))
@@ -102,6 +99,33 @@ export const HabitStore = types
         habit.progress -= 1
         habit.lastUpdated = new Date().toISOString().split("T")[0]
       }
+    },
+    updateHabit(updatedHabit: {
+      id: string
+      name: string
+      emoji: string
+      time: string
+      repeatDays: string[]
+      notificationId?: string
+    }): void {
+      const habit = store.habits.find((h) => h.id === updatedHabit.id)
+      if (!habit) return
+    
+      habit.name = updatedHabit.name
+      habit.emoji = updatedHabit.emoji
+      habit.time = updatedHabit.time
+      habit.repeatDays.replace(updatedHabit.repeatDays)
+    
+      if (updatedHabit.notificationId) {
+        habit.notificationId = updatedHabit.notificationId
+      }
+    
+      habit.lastUpdated = new Date().toISOString() // optional force-trigger reactivity
+    }
+    
+    ,
+    deleteHabit(id: string): void {
+      store.habits.replace(store.habits.filter((h) => h.id !== id))
     },
   }))
 
