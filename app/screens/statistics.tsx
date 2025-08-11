@@ -209,18 +209,15 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
       </View>
       <View style={$filtersContainer}>
         {filters.map((f, idx) => (
-          <>
+          <React.Fragment key={f.id}>
             <TouchableOpacity
-              key={`${f.id}-${f.abbr}`}
               style={filter === f.abbr ? $activeFilter : {}}
               onPress={() => setFilter(f.abbr)}
             >
               <Text text={f.abbr} preset="bold" style={filter === f.abbr ? $activeText : {}} />
             </TouchableOpacity>
-            {filters.length > idx + 1 && (
-              <Text key={`${f.id}-${f.abbr}-${idx}`} text="•" preset="bold" />
-            )}
-          </>
+            {filters.length > idx + 1 && <Text text="•" preset="bold" />}
+          </React.Fragment>
         ))}
       </View>
       <View>
