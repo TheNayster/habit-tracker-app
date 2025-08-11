@@ -13,7 +13,7 @@ const en = {
   homeScreen: {
     hello: "Howdy,",
     check_in: "Daily check-in",
-    today: "Today",
+    today: "Todaaay",
   },
   errorScreen: {
     title: "Something went wrong!",
