@@ -27,6 +27,7 @@ export type SettingsStackParamList = {
 export type TabParamList = {
   HomeStack: NavigatorScreenParams<HomeStackParamList>
   Statistics: undefined
+  CreateHabit: undefined
   SettingsStack: NavigatorScreenParams<SettingsStackParamList>
 }
 

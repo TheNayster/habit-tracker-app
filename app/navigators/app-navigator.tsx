@@ -103,6 +103,8 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
               iconName = focused ? "home-filled" : "home"
             } else if (route.name === "Statistics") {
               iconName = focused ? "data-usage" : "data-usage"
+            } else if (route.name === "CreateHabit") {
+              iconName = focused ? "add-circle" : "add-circle-outline"
             } else if (route.name === "SettingsStack") {
               iconName = focused ? "settings" : "settings"
             }
@@ -125,6 +127,7 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
         
         {<Tab.Screen name="Statistics" component={Screens.StatisticsScreen} />}
         <Tab.Screen name="HomeStack" component={HomeStack} />
+        <Tab.Screen name="CreateHabit" component={Screens.CreateHabitScreen} />
         {<Tab.Screen name="SettingsStack" component={SettingsStack} />}
       </Tab.Navigator>
     </NavigationContainer>
