@@ -60,14 +60,6 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
           <TouchableOpacity onPress={() => navigation.navigate("Calendar")}>
             <MaterialCommunityIcons name="calendar-month-outline" size={28} color={colors.text} />
           </TouchableOpacity>
-          <View style={{ backgroundColor: colors.palette.primary600, width: 40, height: 40, alignItems: "center", justifyContent: "center", borderRadius: 99 }}>
-            <MaterialCommunityIcons
-              name="plus"
-              color={colors.palette.neutral100}
-              size={28}
-              onPress={() => navigation.navigate("CreateHabit")}
-            />
-          </View>
         </View>
 
         <View style={{ flexDirection: "row", gap: 18 }}>
