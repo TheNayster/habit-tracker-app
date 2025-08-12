@@ -44,7 +44,8 @@
         "backgroundColor": "#191015"
       },
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSUserNotificationUsageDescription": "Reason for sending reminders"
       }
     },
     "web": {
