@@ -109,6 +109,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
         notificationIds.push(id)
       }
     }
+  }
 
     habitStore.addHabit({
       emoji,

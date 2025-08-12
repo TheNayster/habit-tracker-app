@@ -126,7 +126,7 @@ export const HabitStore = types
       }
 
       habit.lastUpdated = new Date().toISOString() // optional force-trigger reactivity
-    }
+    },
     
     deleteHabit(id: string): void {
       const habit = store.habits.find((h) => h.id === id)
@@ -136,7 +136,7 @@ export const HabitStore = types
         }
       }
       store.habits.replace(store.habits.filter((h) => h.id !== id))
-    },
+    }
   }))
 
  
