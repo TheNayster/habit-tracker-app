@@ -32,10 +32,12 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
     ;(async () => {
       Notifications.setNotificationHandler({
         handleNotification: async () => ({
-          shouldShowAlert: true,
-          shouldPlaySound: true,
-          shouldSetBadge: false,
-        }),
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      }),
       })
 
       const { status } = await Notifications.requestPermissionsAsync()
@@ -128,7 +130,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
     >
       <Text text="Do a thing" preset="heading" style={{ marginBottom: spacing.md }} />
 
-      <Text text="Habit Name" />
+  <Text text="Habit Name:" style={{ fontSize: 20, fontWeight: "bold" }} />
       <TextInput
         placeholder="Type here…"
         placeholderTextColor={colors.textDim}
@@ -138,7 +140,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
         style={{
           backgroundColor: colors.background,
           padding: spacing.sm,
-          marginBottom: spacing.md,
+          marginBottom: 8,
           borderRadius: 10,
           color: colors.text,
         }}
@@ -148,13 +150,11 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
         onPress={() => setShowEmojiPicker(true)}
         style={{
           backgroundColor: colors.palette.neutral200,
-          padding: spacing.sm,
           borderRadius: 10,
-          marginBottom: spacing.md,
-          alignItems: "center",
+          marginBottom: spacing.md
         }}
       >
-        <Text text={`Selected: ${emoji}  —  Tap to change`} size="md" />
+      <Text text={`Select Emoji: ${emoji} Tap to change`} size="xl" />
       </TouchableOpacity>
       <EmojiPicker
         onEmojiSelected={(e) => {
@@ -173,7 +173,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
           marginBottom: spacing.sm,
         }}
       >
-        <Text text="Notification Times" />
+        <Text text="Notification Times:" />
         <Switch value={notificationEnabled} onValueChange={setNotificationEnabled} />
       </View>
 
@@ -274,7 +274,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
         </View>
       </Modal>
 
-      <Text text="Repeat on Days" />
+      <Text text="Repeat on Days:" />
       <View
         style={{
           flexDirection: "row",
