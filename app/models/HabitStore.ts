@@ -4,6 +4,7 @@ import { HabitModel } from "./HabitModel"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 import { v4 as uuidv4 } from "uuid"
 import { format, subDays } from "date-fns"
+import * as Notifications from "expo-notifications"
 
 
 const CheckInModel = types
@@ -53,10 +54,13 @@ export const HabitStore = types
   }))
   .actions(withSetPropAction)
   .actions((store) => ({
-    addHabit(habitData: Omit<SnapshotIn<typeof HabitModel>, "id">): void {
+    addHabit(
+      habitData: Omit<SnapshotIn<typeof HabitModel>, "id" | "notificationIds"> & { notificationIds?: string[] },
+    ): void {
       const newHabit = {
         ...habitData,
         id: uuidv4(),
+        notificationIds: habitData.notificationIds ?? [],
       }
       store.habits.push(newHabit)
     },
@@ -107,25 +111,30 @@ export const HabitStore = types
       emoji: string
       time: string
       repeatDays: string[]
-      notificationId?: string
+      notificationIds?: string[]
     }): void {
       const habit = store.habits.find((h) => h.id === updatedHabit.id)
       if (!habit) return
-    
+
       habit.name = updatedHabit.name
       habit.emoji = updatedHabit.emoji
       habit.time = updatedHabit.time
       habit.repeatDays.replace(updatedHabit.repeatDays)
-    
-      if (updatedHabit.notificationId) {
-        habit.notificationId = updatedHabit.notificationId
+
+      if (updatedHabit.notificationIds) {
+        habit.notificationIds.replace(updatedHabit.notificationIds)
       }
-    
+
       habit.lastUpdated = new Date().toISOString() // optional force-trigger reactivity
     }
     
-    ,
     deleteHabit(id: string): void {
+      const habit = store.habits.find((h) => h.id === id)
+      if (habit) {
+        for (const notifId of habit.notificationIds) {
+          void Notifications.cancelScheduledNotificationAsync(notifId)
+        }
+      }
       store.habits.replace(store.habits.filter((h) => h.id !== id))
     },
   }))

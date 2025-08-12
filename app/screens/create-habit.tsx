@@ -81,14 +81,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
   const createHabit = async () => {
     if (!name || repeatDays.length === 0) return
 
-    habitStore.addHabit({
-      emoji,
-      name,
-      time: formatTime(notificationTimes[0] || new Date()),
-      finished: false,
-      repeatDays,
-      dailyTarget: parseInt(dailyTarget),
-    })
+    const notificationIds: string[] = []
 
     if (notificationEnabled && notificationTimes.length > 0) {
       const granted = await requestNotificationPermission()
@@ -99,21 +92,33 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
           const hour = date.getHours()
           const minute = date.getMinutes()
 
-          await Notifications.scheduleNotificationAsync({
-            content: {
-              title: "Reminder!",
-              body: `Time to: ${name}`,
-            },
-            trigger: {
-              type: "calendar",
-              hour,
-              minute,
-              repeats: true,
-            } as unknown as Notifications.NotificationTriggerInput,
-          })
-        }
+
+        const id = await Notifications.scheduleNotificationAsync({
+          content: {
+            title: "Reminder!",
+            body: `Time to: ${name}`,
+          },
+          trigger: {
+            type: "calendar",
+            hour,
+            minute,
+            repeats: true,
+          } as unknown as Notifications.NotificationTriggerInput,
+        })
+
+        notificationIds.push(id)
       }
     }
+
+    habitStore.addHabit({
+      emoji,
+      name,
+      time: formatTime(notificationTimes[0] || new Date()),
+      finished: false,
+      repeatDays,
+      dailyTarget: parseInt(dailyTarget),
+      notificationIds,
+    })
 
     Toast.show({
       type: "success",

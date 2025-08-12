@@ -72,7 +72,7 @@ export const EditHabitScreen = observer(function EditHabitScreen() {
       emoji,
       time: triggerTime.toISOString(),
       repeatDays,
-      notificationId: newNotificationId,
+      notificationIds: [newNotificationId],
     })
 
     Toast.show({ type: "success", text1: `Updated: ${name}` })
@@ -81,8 +81,10 @@ export const EditHabitScreen = observer(function EditHabitScreen() {
 
   const deleteHabit = async () => {
     if (!habit) return
-    if (habit.notificationId) {
-      await Notifications.cancelScheduledNotificationAsync(habit.notificationId)
+    if (habit.notificationIds) {
+      for (const id of habit.notificationIds) {
+        await Notifications.cancelScheduledNotificationAsync(id)
+      }
     }
     habitStore.deleteHabit(habit.id)
     Toast.show({ type: "info", text1: `Deleted: ${habit.name}` })
