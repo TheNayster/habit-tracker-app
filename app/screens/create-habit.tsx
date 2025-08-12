@@ -2,7 +2,16 @@
 
 import React, { useState, useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { View, TouchableOpacity, Modal, TextInput, Platform, Pressable, Switch } from "react-native"
+import {
+  View,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+  Platform,
+  Pressable,
+  Switch,
+  Alert,
+} from "react-native"
 import { Screen, Text } from "app/components"
 import { spacing, colors } from "app/theme"
 import { useNavigation } from "@react-navigation/native"
@@ -29,23 +38,33 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
   const [editingTimeIndex, setEditingTimeIndex] = useState<number | null>(null)
 
   useEffect(() => {
-    ;(async () => {
-      Notifications.setNotificationHandler({
-        handleNotification: async () => ({
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
         shouldShowAlert: true,
         shouldPlaySound: true,
         shouldSetBadge: false,
         shouldShowBanner: true,
         shouldShowList: true,
       }),
-      })
-
-      const { status } = await Notifications.requestPermissionsAsync()
-      if (status !== "granted") {
-        alert("Permission for notifications not granted.")
-      }
-    })()
+    })
   }, [])
+
+  const requestNotificationPermission = async () => {
+    const { status } = await Notifications.requestPermissionsAsync()
+    if (status !== "granted") {
+      Alert.alert("Allow Notifications", "We need permission to send reminders.")
+      return false
+    }
+    return true
+  }
+
+  const handleNotificationToggle = async (value: boolean) => {
+    if (value) {
+      const granted = await requestNotificationPermission()
+      if (!granted) return
+    }
+    setNotificationEnabled(value)
+  }
 
   const toggleRepeatDay = (day: string) => {
     if (repeatDays.includes(day)) {
@@ -72,22 +91,27 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
     })
 
     if (notificationEnabled && notificationTimes.length > 0) {
-      for (const date of notificationTimes) {
-        const hour = date.getHours()
-        const minute = date.getMinutes()
+      const granted = await requestNotificationPermission()
+      if (!granted) {
+        setNotificationEnabled(false)
+      } else {
+        for (const date of notificationTimes) {
+          const hour = date.getHours()
+          const minute = date.getMinutes()
 
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: "Reminder!",
-            body: `Time to: ${name}`,
-          },
-          trigger: {
-            type: "calendar",
-            hour,
-            minute,
-            repeats: true,
-          } as unknown as Notifications.NotificationTriggerInput,
-        })
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: "Reminder!",
+              body: `Time to: ${name}`,
+            },
+            trigger: {
+              type: "calendar",
+              hour,
+              minute,
+              repeats: true,
+            } as unknown as Notifications.NotificationTriggerInput,
+          })
+        }
       }
     }
 
@@ -174,7 +198,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
         }}
       >
         <Text text="Notification Times:" />
-        <Switch value={notificationEnabled} onValueChange={setNotificationEnabled} />
+        <Switch value={notificationEnabled} onValueChange={handleNotificationToggle} />
       </View>
 
       {notificationEnabled && (
