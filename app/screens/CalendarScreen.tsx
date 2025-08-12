@@ -1,13 +1,11 @@
-
 import React, { useState, useEffect } from "react"
 import { View, Text, StyleSheet } from "react-native"
 import { observer } from "mobx-react-lite"
-import { DateData } from 'react-native-calendars';
+import { DateData } from "react-native-calendars"
 import { useStores } from "app/models"
 import { Screen } from "app/components"
 import { spacing, colors } from "app/theme"
 import { Calendar } from "react-native-calendars"
-
 
 export const CalendarScreen = observer(function CalendarScreen() {
   const { habitStore } = useStores()
@@ -33,9 +31,7 @@ export const CalendarScreen = observer(function CalendarScreen() {
   // Create marked dates
   const markedDates = Object.keys(weekdayMap).reduce((acc, date) => {
     const weekday = weekdayMap[date]
-    const shouldMark = habitStore.habits.some((habit) =>
-      habit.repeatDays.includes(weekday),
-    )
+    const shouldMark = habitStore.habits.some((habit) => habit.repeatDays.includes(weekday))
     if (shouldMark) {
       acc[date] = {
         marked: true,
@@ -50,14 +46,14 @@ export const CalendarScreen = observer(function CalendarScreen() {
   const handleDayPress = (day: DateData) => {
     setSelectedDay(day.dateString)
     const weekday = weekdayMap[day.dateString]
-    const habits = habitStore.habits.filter((habit) =>
-      habit.repeatDays.includes(weekday),
-    ).map(h => h.name)
+    const habits = habitStore.habits
+      .filter((habit) => habit.repeatDays.includes(weekday))
+      .map((h) => h.name)
     setHabitsForDay(habits)
   }
 
   return (
-    <Screen preset="scroll" contentContainerStyle={$container}>
+    <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={$container}>
       <Calendar
         markedDates={markedDates}
         onDayPress={handleDayPress}
@@ -71,7 +67,9 @@ export const CalendarScreen = observer(function CalendarScreen() {
         <Text style={styles.heading}>Habits for {selectedDay || "..."}</Text>
         {habitsForDay.length > 0 ? (
           habitsForDay.map((habit, idx) => (
-            <Text key={idx} style={styles.habit}>{habit}</Text>
+            <Text key={idx} style={styles.habit}>
+              {habit}
+            </Text>
           ))
         ) : (
           <Text style={styles.noHabits}>No habits for this day</Text>
