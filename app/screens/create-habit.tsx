@@ -1,18 +1,8 @@
-
 // 🔥 CLEANED + FIXED create-habit.tsx FILE
 
 import React, { useState, useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import {
-  View,
-  TouchableOpacity,
-  Modal,
-  FlatList,
-  TextInput,
-  Platform,
-  Pressable,
-  Switch,
-} from "react-native"
+import { View, TouchableOpacity, Modal, TextInput, Platform, Pressable, Switch } from "react-native"
 import { Screen, Text } from "app/components"
 import { spacing, colors } from "app/theme"
 import { useNavigation } from "@react-navigation/native"
@@ -21,6 +11,7 @@ import { HomeStackScreenProps } from "app/navigators/types"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import Toast from "react-native-toast-message"
 import * as Notifications from "expo-notifications"
+import EmojiPicker from "rn-emoji-keyboard"
 
 export const CreateHabitScreen = observer(function CreateHabitScreen() {
   const { habitStore } = useStores()
@@ -38,7 +29,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
   const [editingTimeIndex, setEditingTimeIndex] = useState<number | null>(null)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       Notifications.setNotificationHandler({
         handleNotification: async () => ({
           shouldShowAlert: true,
@@ -46,15 +37,13 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
           shouldSetBadge: false,
         }),
       })
-  
+
       const { status } = await Notifications.requestPermissionsAsync()
       if (status !== "granted") {
         alert("Permission for notifications not granted.")
       }
     })()
   }, [])
-  
-  
 
   const toggleRepeatDay = (day: string) => {
     if (repeatDays.includes(day)) {
@@ -69,7 +58,6 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
   }
 
   const createHabit = async () => {
-    
     if (!name || repeatDays.length === 0) return
 
     habitStore.addHabit({
@@ -80,13 +68,12 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
       repeatDays,
       dailyTarget: parseInt(dailyTarget),
     })
-    
 
     if (notificationEnabled && notificationTimes.length > 0) {
       for (const date of notificationTimes) {
         const hour = date.getHours()
         const minute = date.getMinutes()
-    
+
         await Notifications.scheduleNotificationAsync({
           content: {
             title: "Reminder!",
@@ -97,11 +84,10 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
             hour,
             minute,
             repeats: true,
-          }as unknown as Notifications.NotificationTriggerInput,
+          } as unknown as Notifications.NotificationTriggerInput,
         })
       }
     }
-    
 
     Toast.show({
       type: "success",
@@ -111,7 +97,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
 
     navigation.goBack()
   }
-  
+
   const handleAddNotificationTime = () => {
     setNotificationTimes([...notificationTimes, new Date()])
     setEditingTimeIndex(notificationTimes.length)
@@ -128,78 +114,19 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
     setShowTimeModal(false)
   }
 
-  const favoriteEmojis = ["💪", "🧘", "😴", "🌱", "💧"]
-  const emojiBank = ["💪", "🧘", "😴", "🌱", "💧", "🔥", "🎯", "📚", "🧼", "🦷", "🚰", "🏃", "🍎", "🥦", "🛌", "💤", "☕️", "📖", "🎸", "🎨", "🖊️", "🧠", "🎧", "🛁", "🌄"]
   const allDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
   return (
-    <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={{
-      paddingHorizontal: spacing.lg,
-      paddingTop: spacing.xl,
-      paddingBottom: spacing.xl * 2 }}>
+    <Screen
+      preset="scroll"
+      safeAreaEdges={["top", "bottom"]}
+      contentContainerStyle={{
+        paddingHorizontal: spacing.lg,
+        paddingTop: spacing.xl,
+        paddingBottom: spacing.xl * 2,
+      }}
+    >
       <Text text="Do a thing" preset="heading" style={{ marginBottom: spacing.md }} />
-
-      <Text text="Emoji" />
-      <View style={{ flexDirection: "row", marginBottom: spacing.sm }}>
-        {favoriteEmojis.map((e) => (
-          <TouchableOpacity
-            key={e}
-            style={{
-              padding: spacing.sm,
-              marginRight: spacing.sm,
-              backgroundColor: emoji === e ? colors.palette.primary200 : colors.palette.neutral200,
-              borderRadius: 10,
-            }}
-            onPress={() => setEmoji(e)}
-          >
-            <Text text={e} size="xl" />
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <TouchableOpacity
-        onPress={() => setShowEmojiPicker(true)}
-        style={{
-          backgroundColor: colors.palette.neutral200,
-          padding: spacing.sm,
-          borderRadius: 10,
-          marginBottom: spacing.md,
-          alignItems: "center",
-        }}
-      >
-        <Text text={`Selected: ${emoji}  —  Tap to change`} size="md" />
-      </TouchableOpacity>
-
-      <Modal visible={showEmojiPicker} animationType="slide">
-        <Screen preset="fixed" safeAreaEdges={["top", "bottom"]} style={{ padding: spacing.lg }}>
-          <Text text="Choose an Emoji" preset="heading" style={{ marginBottom: spacing.md }} />
-          <FlatList
-            data={emojiBank}
-            numColumns={6}
-            keyExtractor={(item) => item}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={{
-                  padding: spacing.sm,
-                  margin: spacing.sm / 2,
-                  backgroundColor: emoji === item ? colors.palette.primary200 : colors.palette.neutral100,
-                  borderRadius: 10,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: 48,
-                  height: 48,
-                }}
-                onPress={() => {
-                  setEmoji(item)
-                  setShowEmojiPicker(false)
-                }}
-              >
-                <Text text={item} size="lg" />
-              </TouchableOpacity>
-            )}
-          />
-        </Screen>
-      </Modal>
 
       <Text text="Habit Name" />
       <TextInput
@@ -217,7 +144,35 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
         }}
       />
 
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: spacing.sm }}>
+      <TouchableOpacity
+        onPress={() => setShowEmojiPicker(true)}
+        style={{
+          backgroundColor: colors.palette.neutral200,
+          padding: spacing.sm,
+          borderRadius: 10,
+          marginBottom: spacing.md,
+          alignItems: "center",
+        }}
+      >
+        <Text text={`Selected: ${emoji}  —  Tap to change`} size="md" />
+      </TouchableOpacity>
+      <EmojiPicker
+        onEmojiSelected={(e) => {
+          setEmoji(e.emoji)
+          setShowEmojiPicker(false)
+        }}
+        open={showEmojiPicker}
+        onClose={() => setShowEmojiPicker(false)}
+      />
+
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: spacing.sm,
+        }}
+      >
         <Text text="Notification Times" />
         <Switch value={notificationEnabled} onValueChange={setNotificationEnabled} />
       </View>
@@ -225,38 +180,38 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
       {notificationEnabled && (
         <View style={{ marginBottom: spacing.md }}>
           {notificationTimes.map((t, i) => (
-          <View
-            key={`${t.getHours()}-${t.getMinutes()}-${i}`}
-            style={{ flexDirection: "row", alignItems: "center", marginBottom: spacing.sm }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                setEditingTimeIndex(i)
-                setTempTime(t)
-                setShowTimeModal(true)
-              }}
-              style={{
-                backgroundColor: colors.background,
-                padding: spacing.sm,
-                borderRadius: 10,
-                flex: 1,
-              }}
+            <View
+              key={`${t.getHours()}-${t.getMinutes()}-${i}`}
+              style={{ flexDirection: "row", alignItems: "center", marginBottom: spacing.sm }}
             >
-              <Text text={formatTime(t)} style={{ color: colors.text }} />
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setEditingTimeIndex(i)
+                  setTempTime(t)
+                  setShowTimeModal(true)
+                }}
+                style={{
+                  backgroundColor: colors.background,
+                  padding: spacing.sm,
+                  borderRadius: 10,
+                  flex: 1,
+                }}
+              >
+                <Text text={formatTime(t)} style={{ color: colors.text }} />
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => {
-                const updated = [...notificationTimes]
-                updated.splice(i, 1)
-                setNotificationTimes(updated)
-              }}
-              style={{ marginLeft: spacing.sm }}
-            >
-              <Text text="x" style={{ color: colors.error, fontSize: 30 }} />
-            </TouchableOpacity>
-          </View>
-        ))}
+              <TouchableOpacity
+                onPress={() => {
+                  const updated = [...notificationTimes]
+                  updated.splice(i, 1)
+                  setNotificationTimes(updated)
+                }}
+                style={{ marginLeft: spacing.sm }}
+              >
+                <Text text="x" style={{ color: colors.error, fontSize: 30 }} />
+              </TouchableOpacity>
+            </View>
+          ))}
 
           <TouchableOpacity
             onPress={handleAddNotificationTime}
@@ -273,8 +228,23 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
       )}
 
       <Modal visible={showTimeModal} transparent animationType="fade">
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <View style={{ backgroundColor: "#1e1e1e", borderRadius: 10, padding: spacing.md, width: "80%", alignItems: "center" }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.5)",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#1e1e1e",
+              borderRadius: 10,
+              padding: spacing.md,
+              width: "80%",
+              alignItems: "center",
+            }}
+          >
             <DateTimePicker
               value={tempTime}
               mode="time"
@@ -282,8 +252,18 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
               display={Platform.OS === "ios" ? "spinner" : "default"}
               onChange={(event, selectedDate) => selectedDate && setTempTime(selectedDate)}
             />
-            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: spacing.md, width: "100%" }}>
-              <Pressable onPress={() => setShowTimeModal(false)} style={{ flex: 1, alignItems: "center" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: spacing.md,
+                width: "100%",
+              }}
+            >
+              <Pressable
+                onPress={() => setShowTimeModal(false)}
+                style={{ flex: 1, alignItems: "center" }}
+              >
                 <Text text="Cancel" style={{ color: colors.palette.primary500 }} />
               </Pressable>
               <Pressable onPress={handleTimeConfirm} style={{ flex: 1, alignItems: "center" }}>
@@ -293,6 +273,33 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
           </View>
         </View>
       </Modal>
+
+      <Text text="Repeat on Days" />
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: spacing.sm,
+          marginBottom: spacing.md,
+        }}
+      >
+        {allDays.map((day) => (
+          <TouchableOpacity
+            key={day}
+            onPress={() => toggleRepeatDay(day)}
+            style={{
+              paddingVertical: spacing.xs,
+              paddingHorizontal: spacing.sm,
+              backgroundColor: repeatDays.includes(day)
+                ? colors.palette.primary400
+                : colors.palette.neutral200,
+              borderRadius: 10,
+            }}
+          >
+            <Text text={day} style={{ color: colors.text }} />
+          </TouchableOpacity>
+        ))}
+      </View>
 
       <View style={{ marginBottom: spacing.lg, alignSelf: "flex-start" }}>
         <Text text="How many times per day?" />
@@ -323,26 +330,6 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
         />
       </View>
 
-      <Text text="Repeat on Days" />
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginBottom: spacing.md }}>
-        {allDays.map((day) => (
-          <TouchableOpacity
-            key={day}
-            onPress={() => toggleRepeatDay(day)}
-            style={{
-              paddingVertical: spacing.xs,
-              paddingHorizontal: spacing.sm,
-              backgroundColor: repeatDays.includes(day)
-                ? colors.palette.primary400
-                : colors.palette.neutral200,
-              borderRadius: 10,
-            }}
-          >
-            <Text text={day} style={{ color: colors.text }} />
-          </TouchableOpacity>
-        ))}
-      </View>
-
       <TouchableOpacity
         onPress={createHabit}
         style={{
@@ -355,8 +342,6 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
       >
         <Text text="Add Habit" style={{ color: colors.palette.neutral100 }} />
       </TouchableOpacity>
-
-
     </Screen>
   )
 })
