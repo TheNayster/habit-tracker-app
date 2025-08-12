@@ -114,7 +114,6 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
     setShowTimeModal(false)
   }
 
-  const favoriteEmojis = ["💪", "🧘", "😴", "🌱", "💧"]
   const allDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
   return (
@@ -129,23 +128,21 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
     >
       <Text text="Do a thing" preset="heading" style={{ marginBottom: spacing.md }} />
 
-      <Text text="Emoji" />
-      <View style={{ flexDirection: "row", marginBottom: spacing.sm }}>
-        {favoriteEmojis.map((e) => (
-          <TouchableOpacity
-            key={e}
-            style={{
-              padding: spacing.sm,
-              marginRight: spacing.sm,
-              backgroundColor: emoji === e ? colors.palette.primary200 : colors.palette.neutral200,
-              borderRadius: 10,
-            }}
-            onPress={() => setEmoji(e)}
-          >
-            <Text text={e} size="xl" />
-          </TouchableOpacity>
-        ))}
-      </View>
+      <Text text="Habit Name" />
+      <TextInput
+        placeholder="Type here…"
+        placeholderTextColor={colors.textDim}
+        value={name}
+        onChangeText={setName}
+        maxLength={50}
+        style={{
+          backgroundColor: colors.background,
+          padding: spacing.sm,
+          marginBottom: spacing.md,
+          borderRadius: 10,
+          color: colors.text,
+        }}
+      />
 
       <TouchableOpacity
         onPress={() => setShowEmojiPicker(true)}
@@ -166,22 +163,6 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
         }}
         open={showEmojiPicker}
         onClose={() => setShowEmojiPicker(false)}
-      />
-
-      <Text text="Habit Name" />
-      <TextInput
-        placeholder="Type here…"
-        placeholderTextColor={colors.textDim}
-        value={name}
-        onChangeText={setName}
-        maxLength={50}
-        style={{
-          backgroundColor: colors.background,
-          padding: spacing.sm,
-          marginBottom: spacing.md,
-          borderRadius: 10,
-          color: colors.text,
-        }}
       />
 
       <View
