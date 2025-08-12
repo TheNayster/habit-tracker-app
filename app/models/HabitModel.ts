@@ -10,7 +10,7 @@ export const HabitModel = types.model("Habit", {
   dailyTarget: types.number,
   progress: types.optional(types.number, 0),
   lastUpdated: types.optional(types.string, ""), // ISO date
-  notificationId: types.maybe(types.string),
+  notificationIds: types.array(types.string),
 })
 
 export type HabitType = typeof HabitModel.Type
