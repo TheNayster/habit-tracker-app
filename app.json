@@ -45,7 +45,7 @@
       },
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSUserNotificationUsageDescription": "Reason for sending reminders"
+        "NSUserNotificationUsageDescription": "We send reminders so you never miss a habit."
       }
     },
     "web": {
