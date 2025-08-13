@@ -125,6 +125,10 @@ export const HabitStore = types
       habit.repeatDays.replace(updatedHabit.repeatDays)
       habit.dailyTarget = updatedHabit.dailyTarget
 
+      if (habit.progress > habit.dailyTarget) {
+        habit.progress = habit.dailyTarget
+      }
+
       if (updatedHabit.notificationIds) {
         habit.notificationIds.replace(updatedHabit.notificationIds)
       }
