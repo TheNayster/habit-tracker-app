@@ -10,5 +10,7 @@ export async function syncNotifications(habitStore: typeof HabitStore.Type) {
     await Notifications.cancelScheduledNotificationAsync(orphan.identifier)
   }
 
-  console.log(`🧹 Removed ${orphans.length} orphaned notifications`)
+  if (__DEV__) {
+    console.log(`🧹 Removed ${orphans.length} orphaned notifications`)
+  }
 }

@@ -72,8 +72,8 @@ function App(props: AppProps) {
     const { rehydrated, rootStore } = useInitialRootStore(() => {
       persistHabitStore(rootStore.habitStore)
       syncNotifications(rootStore.habitStore)
-    
-      console.log("✅ RootStore ready. Hiding splash in 500ms")
+
+      if (__DEV__) console.log("✅ RootStore ready. Hiding splash in 500ms")
       setTimeout(hideSplashScreen, 500)
     
       if (Platform.OS === "android") {

@@ -133,7 +133,9 @@ export const SettingsScreen: FC<SettingsScreenProps<"Settings">> = observer(
           <Link
             icon="logout"
             title="Logout"
-            handleClick={() => console.log("logout")}
+            handleClick={() => {
+              if (__DEV__) console.log("logout")
+            }}
             length={1}
             index={0}
           />
