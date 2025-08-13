@@ -17,8 +17,10 @@ const sampleSnapshot = {
   checkIns: [],
 }
 
-test("loads snapshot on start and saves on change", async () => {
-  (storage.loadString as jest.Mock).mockResolvedValue(JSON.stringify(sampleSnapshot))
+test("handles double encoded snapshot on start and saves on change", async () => {
+  ;(storage.loadString as jest.Mock).mockResolvedValue(
+    JSON.stringify(JSON.stringify(sampleSnapshot)),
+  )
   const saveStringMock = storage.saveString as jest.Mock
 
   const store = HabitStore.create({ habits: [], checkIns: [] })
@@ -44,4 +46,16 @@ test("loads snapshot on start and saves on change", async () => {
     STORAGE_KEY,
     JSON.stringify(updatedSnapshot),
   )
+})
+
+test("removes habit-store key on parse error", async () => {
+  ;(storage.loadString as jest.Mock).mockResolvedValue("not json")
+  const removeMock = storage.remove as jest.Mock
+
+  const store = HabitStore.create({ habits: [], checkIns: [] })
+  persistHabitStore(store)
+
+  await Promise.resolve()
+
+  expect(removeMock).toHaveBeenCalledWith(STORAGE_KEY)
 })
