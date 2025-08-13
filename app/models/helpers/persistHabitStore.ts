@@ -5,12 +5,15 @@ import * as storage from "../../utils/storage"
 const STORAGE_KEY = "habit-store"
 
 export function persistHabitStore(storeInstance: typeof HabitStore.Type) {
-  storage.loadString(STORAGE_KEY).then((saved) => {
-    if (saved) {
+  storage.loadString(STORAGE_KEY).then((raw) => {
+    if (raw) {
       try {
-        applySnapshot(storeInstance, JSON.parse(saved))
+        const snapshot = typeof raw === "string" ? JSON.parse(raw) : raw
+        const parsed = typeof snapshot === "string" ? JSON.parse(snapshot) : snapshot
+        applySnapshot(storeInstance, parsed)
       } catch (err) {
         console.error("❌ Error loading habitStore snapshot", err)
+        storage.remove(STORAGE_KEY)
       }
     } else {
       console.warn("⚠️ No saved habitStore snapshot found.")
