@@ -1,11 +1,9 @@
-
 import { types, SnapshotIn, flow } from "mobx-state-tree"
 import { HabitModel } from "./HabitModel"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 import { v4 as uuidv4 } from "uuid"
 import { format, subDays } from "date-fns"
 import * as Notifications from "expo-notifications"
-
 
 const CheckInModel = types
   .model("CheckIn", {
@@ -115,6 +113,7 @@ export const HabitStore = types
       emoji: string
       time: string | null
       repeatDays: string[]
+      dailyTarget: number
       notificationIds?: string[]
     }): void {
       const habit = store.habits.find((h) => h.id === updatedHabit.id)
@@ -124,6 +123,7 @@ export const HabitStore = types
       habit.emoji = updatedHabit.emoji
       habit.time = updatedHabit.time
       habit.repeatDays.replace(updatedHabit.repeatDays)
+      habit.dailyTarget = updatedHabit.dailyTarget
 
       if (updatedHabit.notificationIds) {
         habit.notificationIds.replace(updatedHabit.notificationIds)
@@ -131,7 +131,7 @@ export const HabitStore = types
 
       habit.lastUpdated = new Date().toISOString() // optional force-trigger reactivity
     },
-    
+
     deleteHabit: flow(function* deleteHabit(id: string) {
       const habit = store.habits.find((h) => h.id === id)
       if (habit) {
@@ -144,8 +144,5 @@ export const HabitStore = types
         }
       }
       store.habits.replace(store.habits.filter((h) => h.id !== id))
-    })
+    }),
   }))
-
- 
-  
