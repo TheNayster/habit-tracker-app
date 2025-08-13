@@ -25,7 +25,7 @@ export const EditHabitScreen = observer(function EditHabitScreen() {
 
   const habit = habitStore.habits.find((h) => h.id === habitId)
 
-  console.log("🛠 Editing Habit ID:", habitId, "| Habit Found:", !!habit)
+  if (__DEV__) console.log("🛠 Editing Habit ID:", habitId, "| Habit Found:", !!habit)
 
   const [name, setName] = useState("")
   const [emoji, setEmoji] = useState("")
