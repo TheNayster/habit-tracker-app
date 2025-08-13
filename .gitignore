@@ -86,3 +86,10 @@ web-build/
 !env.js
 
 /coverage
+
+# Generated archives and accidental files
+build-*.tar.gz
+my-app-folder.zip
+=
+tsconfig 2.json
+yarn 2.lock
