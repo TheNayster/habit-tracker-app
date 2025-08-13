@@ -115,7 +115,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
     habitStore.addHabit({
       emoji,
       name,
-      time: formatTime(notificationTimes[0] || new Date()),
+      time: notificationTimes.length > 0 ? formatTime(notificationTimes[0]) : null,
       finished: false,
       repeatDays,
       dailyTarget: parseInt(dailyTarget),

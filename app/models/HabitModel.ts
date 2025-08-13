@@ -4,7 +4,7 @@ export const HabitModel = types.model("Habit", {
   id: types.identifier,
   emoji: types.string,
   name: types.string,
-  time: types.string,
+  time: types.maybeNull(types.string),
   finished: types.boolean,
   repeatDays: types.array(types.string), 
   dailyTarget: types.number,
