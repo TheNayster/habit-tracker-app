@@ -16,7 +16,6 @@ import { Screen, Text } from "app/components"
 import { spacing, colors } from "app/theme"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "app/models"
-import { HomeStackScreenProps } from "app/navigators/types"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import Toast from "react-native-toast-message"
 import * as Notifications from "expo-notifications"
@@ -24,7 +23,7 @@ import EmojiPicker from "rn-emoji-keyboard"
 
 export const CreateHabitScreen = observer(function CreateHabitScreen() {
   const { habitStore } = useStores()
-  const navigation = useNavigation<HomeStackScreenProps<"CreateHabit">["navigation"]>()
+  const navigation = useNavigation<any>()
 
   const [name, setName] = useState("")
   const [emoji, setEmoji] = useState("💪")
@@ -36,6 +35,19 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
   const [notificationEnabled, setNotificationEnabled] = useState(false)
   const [notificationTimes, setNotificationTimes] = useState<Date[]>([])
   const [editingTimeIndex, setEditingTimeIndex] = useState<number | null>(null)
+
+  const resetForm = () => {
+    setName("")
+    setEmoji("💪")
+    setShowEmojiPicker(false)
+    setTempTime(new Date())
+    setShowTimeModal(false)
+    setRepeatDays([])
+    setDailyTarget("1")
+    setNotificationEnabled(false)
+    setNotificationTimes([])
+    setEditingTimeIndex(null)
+  }
 
   useEffect(() => {
     Notifications.setNotificationHandler({
@@ -92,8 +104,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
           const hour = date.getHours()
           const minute = date.getMinutes()
 
-
-        const id = await Notifications.scheduleNotificationAsync({
+          const id = await Notifications.scheduleNotificationAsync({
           content: {
             title: "Reminder!",
             body: `Time to: ${name}`,
@@ -127,7 +138,8 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
       text2: `Scheduled for: ${repeatDays.join(", ")}`,
     })
 
-    navigation.goBack()
+    resetForm()
+    navigation.navigate("HomeStack")
   }
 
   const handleAddNotificationTime = () => {
