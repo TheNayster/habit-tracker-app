@@ -1,5 +1,5 @@
 
-import { types, SnapshotIn } from "mobx-state-tree"
+import { types, SnapshotIn, flow } from "mobx-state-tree"
 import { HabitModel } from "./HabitModel"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 import { v4 as uuidv4 } from "uuid"
@@ -55,10 +55,14 @@ export const HabitStore = types
   .actions(withSetPropAction)
   .actions((store) => ({
     addHabit(
-      habitData: Omit<SnapshotIn<typeof HabitModel>, "id" | "notificationIds"> & { notificationIds?: string[] },
+      habitData: Omit<SnapshotIn<typeof HabitModel>, "id" | "notificationIds" | "time"> & {
+        time?: string | null
+        notificationIds?: string[]
+      },
     ): void {
       const newHabit = {
         ...habitData,
+        time: habitData.time ?? null,
         id: uuidv4(),
         notificationIds: habitData.notificationIds ?? [],
       }
@@ -109,7 +113,7 @@ export const HabitStore = types
       id: string
       name: string
       emoji: string
-      time: string
+      time: string | null
       repeatDays: string[]
       notificationIds?: string[]
     }): void {
@@ -128,15 +132,19 @@ export const HabitStore = types
       habit.lastUpdated = new Date().toISOString() // optional force-trigger reactivity
     },
     
-    deleteHabit(id: string): void {
+    deleteHabit: flow(function* deleteHabit(id: string) {
       const habit = store.habits.find((h) => h.id === id)
       if (habit) {
         for (const notifId of habit.notificationIds) {
-          void Notifications.cancelScheduledNotificationAsync(notifId)
+          try {
+            yield Notifications.cancelScheduledNotificationAsync(notifId)
+          } catch (error) {
+            console.error(`Failed to cancel notification ${notifId}`, error)
+          }
         }
       }
       store.habits.replace(store.habits.filter((h) => h.id !== id))
-    }
+    })
   }))
 
  

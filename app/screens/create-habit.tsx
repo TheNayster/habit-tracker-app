@@ -1,6 +1,6 @@
 // 🔥 CLEANED + FIXED create-habit.tsx FILE
 
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
   View,
@@ -49,17 +49,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
     setEditingTimeIndex(null)
   }
 
-  useEffect(() => {
-    Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: false,
-        shouldShowBanner: true,
-        shouldShowList: true,
-      }),
-    })
-  }, [])
+
 
   const requestNotificationPermission = async () => {
     const { status } = await Notifications.requestPermissionsAsync()
@@ -125,7 +115,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
     habitStore.addHabit({
       emoji,
       name,
-      time: formatTime(notificationTimes[0] || new Date()),
+      time: notificationTimes.length > 0 ? formatTime(notificationTimes[0]) : null,
       finished: false,
       repeatDays,
       dailyTarget: parseInt(dailyTarget),
