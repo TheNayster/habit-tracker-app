@@ -55,10 +55,14 @@ export const HabitStore = types
   .actions(withSetPropAction)
   .actions((store) => ({
     addHabit(
-      habitData: Omit<SnapshotIn<typeof HabitModel>, "id" | "notificationIds"> & { notificationIds?: string[] },
+      habitData: Omit<SnapshotIn<typeof HabitModel>, "id" | "notificationIds" | "time"> & {
+        time?: string | null
+        notificationIds?: string[]
+      },
     ): void {
       const newHabit = {
         ...habitData,
+        time: habitData.time ?? null,
         id: uuidv4(),
         notificationIds: habitData.notificationIds ?? [],
       }
@@ -109,7 +113,7 @@ export const HabitStore = types
       id: string
       name: string
       emoji: string
-      time: string
+      time: string | null
       repeatDays: string[]
       notificationIds?: string[]
     }): void {

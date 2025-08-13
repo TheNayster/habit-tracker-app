@@ -29,7 +29,7 @@ export const EditHabitScreen = observer(function EditHabitScreen() {
 
   const [name, setName] = useState("")
   const [emoji, setEmoji] = useState("")
-  const [time, setTime] = useState(new Date())
+  const [time, setTime] = useState<Date | null>(null)
   const [repeatDays, setRepeatDays] = useState<string[]>([])
   const [showTimePicker, setShowTimePicker] = useState(false)
 
@@ -37,7 +37,7 @@ export const EditHabitScreen = observer(function EditHabitScreen() {
     if (!habit) return
     setName(habit.name)
     setEmoji(habit.emoji)
-    setTime(new Date(habit.time))
+    setTime(habit.time ? new Date(habit.time) : null)
     setRepeatDays(habit.repeatDays.slice())
   }, [habit])
 
@@ -47,33 +47,44 @@ export const EditHabitScreen = observer(function EditHabitScreen() {
       return
     }
 
-    const triggerTime = new Date(time)
-    const now = new Date()
-    if (triggerTime <= now) triggerTime.setDate(triggerTime.getDate() + 1)
+    if (time) {
+      const triggerTime = new Date(time)
+      const now = new Date()
+      if (triggerTime <= now) triggerTime.setDate(triggerTime.getDate() + 1)
 
-    const newNotificationId = await Notifications.scheduleNotificationAsync({
-      content: {
-        title: `Reminder: ${name}`,
-        body: `Time to complete your habit!`,
-      },
-      trigger: {
-        type: "calendar",
-        hour: triggerTime.getHours(),
-        minute: triggerTime.getMinutes(),
-        repeats: true,
-      } as unknown as Notifications.NotificationTriggerInput,
-    })
+      const newNotificationId = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `Reminder: ${name}`,
+          body: `Time to complete your habit!`,
+        },
+        trigger: {
+          type: "calendar",
+          hour: triggerTime.getHours(),
+          minute: triggerTime.getMinutes(),
+          repeats: true,
+        } as unknown as Notifications.NotificationTriggerInput,
+      })
 
-    console.log("✅ Updating Habit:", habit.id)
+      console.log("✅ Updating Habit:", habit.id)
 
-    habitStore.updateHabit({
-      id: habit.id,
-      name,
-      emoji,
-      time: triggerTime.toISOString(),
-      repeatDays,
-      notificationIds: [newNotificationId],
-    })
+      habitStore.updateHabit({
+        id: habit.id,
+        name,
+        emoji,
+        time: triggerTime.toISOString(),
+        repeatDays,
+        notificationIds: [newNotificationId],
+      })
+    } else {
+      habitStore.updateHabit({
+        id: habit.id,
+        name,
+        emoji,
+        time: null,
+        repeatDays,
+        notificationIds: [],
+      })
+    }
 
     Toast.show({ type: "success", text1: `Updated: ${name}` })
     navigation.goBack()
@@ -130,14 +141,14 @@ export const EditHabitScreen = observer(function EditHabitScreen() {
 
       <TouchableOpacity onPress={() => setShowTimePicker(true)} style={{ marginBottom: spacing.md }}>
         <Text
-          text={`Time: ${!isNaN(time.getTime()) ? time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Not Set"}`}
+          text={`Time: ${time ? time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Unscheduled"}`}
           style={{ fontSize: 16 }}
         />
       </TouchableOpacity>
 
       {showTimePicker && (
         <DateTimePicker
-          value={time}
+          value={time ?? new Date()}
           mode="time"
           is24Hour={false}
           display={Platform.OS === "ios" ? "spinner" : "default"}

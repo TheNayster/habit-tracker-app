@@ -171,7 +171,12 @@ const Habit = observer(function Habit({ task, navigation }: HabitProps) {
           </View>
           <View>
             <Text text={task.name} weight="bold" style={{ color: colors.text, fontSize: 16 }}/>
-            <Text text={`Start at ${task.time}`} weight="bold" size="xs" style={{ color: colors.text, fontSize: 16 }} />
+            <Text
+              text={task.time ? `Start at ${task.time}` : "Unscheduled"}
+              weight="bold"
+              size="xs"
+              style={{ color: colors.text, fontSize: 16 }}
+            />
           </View>
         </View>
       </TouchableOpacity>
