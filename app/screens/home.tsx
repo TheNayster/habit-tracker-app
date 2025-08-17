@@ -47,14 +47,24 @@ const DayCard = ({ day, date }: { day: string; date: string }) => (
 interface HomeScreenProps extends HomeStackScreenProps<"Home"> {}
 
 export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ navigation }) {
-  const { habitStore } = useStores()
+  const { habitStore, userStore } = useStores()
 
   return (
     <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={{ paddingHorizontal: spacing.lg, gap: spacing.xl, paddingBottom: 60 }}>
       <BottomSheetModalProvider>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-            <Image source={require("../../assets/images/avatar-2.png")} style={{ width: 50, height: 50 }} />
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SettingsStack", { screen: "PersonalInfos" })}
+            >
+              <Image
+                source=
+                  {userStore.avatar
+                    ? { uri: userStore.avatar }
+                    : require("../../assets/images/avatar-2.png")}
+                style={{ width: 50, height: 50, borderRadius: 25 }}
+              />
+            </TouchableOpacity>
             <Text text="Today" size="xl" weight="bold" />
           </View>
           <TouchableOpacity onPress={() => navigation.navigate("Calendar")}>

@@ -8,6 +8,7 @@ const _rootStore = RootStoreModel.create({
     habits: [],
     checkIns: [],
   },
+  userStore: {},
 })
 
 // ✅ Shared context for app-wide store access
