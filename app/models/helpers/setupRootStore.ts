@@ -6,7 +6,6 @@ import { RootStore, RootStoreSnapshot, RootStoreModel } from "../RootStore"
 // import { storage } from "../../utils/storage/mmkv"
 import * as storage from "../../utils/storage"
 import { persistHabitStore } from "./persistHabitStore"
-import { persistSettingsStore } from "./persistSettingsStore"
 import { syncNotifications } from "app/utils/syncNotifications"
 
 const ROOT_STATE_STORAGE_KEY = "root-v1"
@@ -21,9 +20,6 @@ export async function setupRootStore(): Promise<{
     habitStore: {
       habits: [],
       checkIns: [],
-    },
-    settingsStore: {
-      isDarkMode: false,
     },
   })
 
@@ -47,7 +43,6 @@ export async function setupRootStore(): Promise<{
 
   // 🚀 Start syncing and persisting just the habitStore
   persistHabitStore(_rootStore.habitStore)
-  persistSettingsStore(_rootStore.settingsStore)
   syncNotifications(_rootStore.habitStore)
 
   return { rootStore: _rootStore, restoredState }
