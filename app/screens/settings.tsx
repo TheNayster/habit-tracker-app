@@ -4,6 +4,7 @@ import { View, ViewStyle, TouchableOpacity } from "react-native"
 
 import { Text, Screen, Icon, Toggle, IconTypes } from "app/components"
 import layout from "app/utils/layout"
+import { useStores } from "app/models"
 
 import { SettingsScreenProps, SettingsStackParamList } from "../navigators/types"
 import { colors, spacing } from "../theme"
@@ -73,7 +74,7 @@ export const SettingsScreen: FC<SettingsScreenProps<"Settings">> = observer(
     return (
       <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={$container}>
         <Text text="Settings" preset="subheading" size="xl" />
-        <View style={$topContainer}>
+        <View style={$topContainer()}>
           <Icon icon="avatar" />
           <View style={$userInfosContainer}>
             <View>
@@ -90,14 +91,14 @@ export const SettingsScreen: FC<SettingsScreenProps<"Settings">> = observer(
 
         <View style={$generalContainer}>
           <Text text="General" preset="formLabel" />
-          <View style={$generalLinksContainer}>
+          <View style={$generalLinksContainer()}>
             {generalLinks.map((l, idx) => (
               <Link
                 key={`${l.id}-${l.to}`}
                 icon={l.icon}
                 title={l.title}
                 // TODO: type the to prop (path to the page)
-                handleClick={() => navigation.navigate(l.to as any)}
+                handleClick={() => l.to && navigation.navigate(l.to as any)}
                 length={generalLinks.length}
                 index={idx}
               />
@@ -107,7 +108,7 @@ export const SettingsScreen: FC<SettingsScreenProps<"Settings">> = observer(
 
         <View style={$generalContainer}>
           <Text text="About Us" preset="formLabel" />
-          <View style={$generalLinksContainer}>
+          <View style={$generalLinksContainer()}>
             {aboutLinks.map((l, idx) => (
               <Link
                 key={`${l.id}-${l.to}`}
@@ -151,21 +152,29 @@ interface LinkProps extends GeneralLinkType {
   handleClick: () => void
 }
 
-export function Link(props: LinkProps) {
+export const Link = observer(function Link(props: LinkProps) {
   const { icon, title, length, index, handleClick } = props
+  const { settingsStore } = useStores()
+
+  const isDarkModeItem = title === "Dark Mode"
 
   return (
     <View style={{ gap: spacing.xs }}>
-      <TouchableOpacity style={$generalLink} onPress={handleClick}>
+      <TouchableOpacity
+        style={$generalLink}
+        onPress={isDarkModeItem ? undefined : handleClick}
+        accessibilityRole={isDarkModeItem ? undefined : "button"}
+      >
         <View style={$generalName}>
           <Icon icon={icon} />
           <Text text={title} />
         </View>
-        {title === "Dark Mode" ? (
+        {isDarkModeItem ? (
           <Toggle
             variant="switch"
-            // value={}
-            // onValueChange={() => setReminder(reminder ? "" : "30 minutes before")}
+            accessibilityLabel="Toggle dark mode"
+            value={settingsStore.isDarkMode}
+            onValueChange={settingsStore.setDarkMode}
             inputInnerStyle={{
               backgroundColor: colors.palette.neutral100,
             }}
@@ -177,10 +186,10 @@ export function Link(props: LinkProps) {
           <Icon icon="caretRight" />
         )}
       </TouchableOpacity>
-      {length !== (index ?? 0) + 1 && <View style={$separator} />}
+      {length !== (index ?? 0) + 1 && <View style={$separator()} />}
     </View>
   )
-}
+})
 
 const $container: ViewStyle = {
   paddingHorizontal: spacing.md,
@@ -188,7 +197,7 @@ const $container: ViewStyle = {
   paddingBottom: 70,
 }
 
-const $topContainer: ViewStyle = {
+const $topContainer = (): ViewStyle => ({
   flexDirection: "row",
   alignItems: "center",
   gap: 16,
@@ -198,7 +207,7 @@ const $topContainer: ViewStyle = {
   paddingBottom: spacing.xs,
   paddingHorizontal: spacing.md,
   maxWidth: layout.window.width * 0.95,
-}
+})
 
 const $userInfosContainer: ViewStyle = {
   flexDirection: "row",
@@ -211,12 +220,12 @@ const $generalContainer: ViewStyle = {
   gap: spacing.md,
 }
 
-const $generalLinksContainer: ViewStyle = {
+const $generalLinksContainer = (): ViewStyle => ({
   backgroundColor: colors.palette.neutral100,
   borderRadius: spacing.xs,
   padding: spacing.md,
   gap: spacing.xs,
-}
+})
 
 const $generalLink: ViewStyle = {
   flexDirection: "row",
@@ -232,8 +241,8 @@ const $generalName: ViewStyle = {
   alignItems: "center",
 }
 
-const $separator: ViewStyle = {
+const $separator = (): ViewStyle => ({
   width: "100%",
   height: 1,
   backgroundColor: colors.palette.neutral200,
-}
+})

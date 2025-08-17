@@ -8,11 +8,12 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { observer } from "mobx-react-lite"
 import React from "react"
-import { Platform, useColorScheme, View, ViewStyle } from "react-native"
+import { Platform, View, ViewStyle } from "react-native"
 import * as Screens from "app/screens"
 import Config from "../config"
 import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
 import { colors } from "app/theme"
+import { useStores } from "app/models"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import { HomeStackParamList, SettingsStackParamList, TabParamList } from "app/navigators/types"
@@ -84,7 +85,8 @@ export interface NavigationProps
   extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
 
 export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
-  const colorScheme = useColorScheme()
+  const { settingsStore } = useStores()
+  const colorScheme = settingsStore.isDarkMode ? "dark" : "light"
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
@@ -121,7 +123,7 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
           headerShown: false,
           tabBarShowLabel: false,
           tabBarHideOnKeyboard: true,
-          tabBarStyle: $tabBarStyles,
+          tabBarStyle: $tabBarStyles(),
         })}
       >
         

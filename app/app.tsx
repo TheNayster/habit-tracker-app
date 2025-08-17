@@ -6,6 +6,7 @@ import "./i18n"
 import "./utils/ignoreWarnings"
 import { useFonts } from "expo-font"
 import React, { useEffect } from "react"
+import { observer } from "mobx-react-lite"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 import * as Linking from "expo-linking"
 import { useInitialRootStore, useStores } from "./models"
@@ -19,6 +20,7 @@ import Toast from "react-native-toast-message"
 import * as Notifications from "expo-notifications"
 import { persistHabitStore } from "app/models/helpers/persistHabitStore"
 import { syncNotifications } from "app/utils/syncNotifications"
+import { setColorScheme } from "./theme/colors"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
@@ -42,7 +44,7 @@ interface AppProps {
   hideSplashScreen: () => Promise<boolean>
 }
 
-function App(props: AppProps) {
+const App = observer(function App(props: AppProps) {
   const { hideSplashScreen } = props
 
   const {
@@ -53,7 +55,7 @@ function App(props: AppProps) {
 
   const [areFontsLoaded] = useFonts(customFontsToLoad)
 
-  /*const { rehydrated } = useInitialRootStore(() => {
+  /* const { rehydrated } = useInitialRootStore(() => {
     const { habitStore } = useStores()
 
     persistHabitStore(habitStore)
@@ -68,7 +70,7 @@ function App(props: AppProps) {
         sound: "default",
       })
     }
-  })*/
+  }) */
     const { rehydrated, rootStore } = useInitialRootStore(() => {
       persistHabitStore(rootStore.habitStore)
       syncNotifications(rootStore.habitStore)
@@ -84,7 +86,12 @@ function App(props: AppProps) {
         })
       }
     })
-    
+
+  const { settingsStore } = useStores()
+
+  useEffect(() => {
+    setColorScheme(settingsStore.isDarkMode ? "dark" : "light")
+  }, [settingsStore.isDarkMode])
 
   useEffect(() => {
     Notifications.setNotificationHandler({
@@ -117,7 +124,7 @@ function App(props: AppProps) {
       </ErrorBoundary>
     </SafeAreaProvider>
   )
-}
+})
 
 export default App
 

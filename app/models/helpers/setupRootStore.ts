@@ -3,9 +3,10 @@
  */
 import { applySnapshot } from "mobx-state-tree"
 import { RootStore, RootStoreSnapshot, RootStoreModel } from "../RootStore"
-//import { storage } from "../../utils/storage/mmkv"
+// import { storage } from "../../utils/storage/mmkv"
 import * as storage from "../../utils/storage"
 import { persistHabitStore } from "./persistHabitStore"
+import { persistSettingsStore } from "./persistSettingsStore"
 import { syncNotifications } from "app/utils/syncNotifications"
 
 const ROOT_STATE_STORAGE_KEY = "root-v1"
@@ -21,16 +22,19 @@ export async function setupRootStore(): Promise<{
       habits: [],
       checkIns: [],
     },
+    settingsStore: {
+      isDarkMode: false,
+    },
   })
 
   let restoredState: RootStoreSnapshot | undefined
 
   try {
-    /*const raw = storage.getString(ROOT_STATE_STORAGE_KEY)
+    /* const raw = storage.getString(ROOT_STATE_STORAGE_KEY)
     if (raw) {
       const snapshot = JSON.parse(raw)
       applySnapshot(_rootStore, snapshot)
-      restoredState = snapshot*/
+      restoredState = snapshot */
 
       const snapshot = (await storage.load(ROOT_STATE_STORAGE_KEY)) as RootStoreSnapshot | null
       if (snapshot) {
@@ -43,6 +47,7 @@ export async function setupRootStore(): Promise<{
 
   // 🚀 Start syncing and persisting just the habitStore
   persistHabitStore(_rootStore.habitStore)
+  persistSettingsStore(_rootStore.settingsStore)
   syncNotifications(_rootStore.habitStore)
 
   return { rootStore: _rootStore, restoredState }
