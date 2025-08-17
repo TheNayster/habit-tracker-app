@@ -1,15 +1,17 @@
 import { observer } from "mobx-react-lite"
 import React, { FC } from "react"
-import { View, ViewStyle } from "react-native"
+import { View, ViewStyle, Image, TouchableOpacity, ImageStyle } from "react-native"
 
 import { Text, Screen, Icon, TextField, Button } from "app/components"
 
 import { Link } from "app/screens/settings"
 import { colors, spacing } from "app/theme"
 import { SettingsScreenProps } from "app/navigators/types"
+import { useStores } from "app/models"
 
 export const PersonalInfosScreen: FC<SettingsScreenProps<"PersonalInfos">> = observer(
   function PersonalInfosScreen({ navigation }) {
+    const { userStore } = useStores()
     return (
       <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={$container}>
         <View style={$headerContainer}>
@@ -20,12 +22,25 @@ export const PersonalInfosScreen: FC<SettingsScreenProps<"PersonalInfos">> = obs
           <Icon icon="pencil" size={16} onPress={() => navigation.navigate("EditPersonalInfos")} />
         </View>
 
+        <View style={$avatarContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate("EditPersonalInfos")}
+          >
+            <Image
+              source=
+                {userStore.avatar
+                  ? { uri: userStore.avatar }
+                  : require("../../../assets/images/avatar-2.png")}
+              style={$avatar}
+            />
+          </TouchableOpacity>
+        </View>
+
         <View style={$generalContainer}>
           <Text text="General" preset="formLabel" />
           <View style={$generalLinksContainer}>
             <TextField
               label="FullName"
-              value="EL Hadji Malick Seck"
+              value={userStore.fullName}
               readOnly
               inputWrapperStyle={{
                 borderRadius: spacing.xs,
@@ -34,7 +49,7 @@ export const PersonalInfosScreen: FC<SettingsScreenProps<"PersonalInfos">> = obs
             />
             <TextField
               label="Email"
-              value="elhadjimalick@gmail.com"
+              value={userStore.email}
               readOnly
               inputWrapperStyle={{
                 borderRadius: spacing.xs,
@@ -43,7 +58,7 @@ export const PersonalInfosScreen: FC<SettingsScreenProps<"PersonalInfos">> = obs
             />
             <TextField
               label="Bio"
-              value="Full Stack Developer | Open Source Enthusiast"
+              value={userStore.bio}
               readOnly
               multiline
               inputWrapperStyle={{
@@ -73,7 +88,7 @@ export const PersonalInfosScreen: FC<SettingsScreenProps<"PersonalInfos">> = obs
             <TextField
               label="Twitter/X"
               readOnly
-              value="@takanome_dev"
+              value={userStore.twitter}
               inputWrapperStyle={{
                 borderRadius: spacing.xs,
                 backgroundColor: colors.palette.neutral100,
@@ -81,7 +96,7 @@ export const PersonalInfosScreen: FC<SettingsScreenProps<"PersonalInfos">> = obs
             />
             <TextField
               label="Linkedin"
-              value="@takanome-dev"
+              value={userStore.linkedin}
               readOnly
               inputWrapperStyle={{
                 borderRadius: spacing.xs,
@@ -91,7 +106,7 @@ export const PersonalInfosScreen: FC<SettingsScreenProps<"PersonalInfos">> = obs
             <TextField
               label="Facebook"
               readOnly
-              value="@takanome-dev"
+              value={userStore.facebook}
               inputWrapperStyle={{
                 borderRadius: spacing.xs,
                 backgroundColor: colors.palette.neutral100,
@@ -100,7 +115,7 @@ export const PersonalInfosScreen: FC<SettingsScreenProps<"PersonalInfos">> = obs
             <TextField
               label="Instagram"
               readOnly
-              value="@takanome-dev"
+              value={userStore.instagram}
               inputWrapperStyle={{
                 borderRadius: spacing.xs,
                 backgroundColor: colors.palette.neutral100,
@@ -161,4 +176,15 @@ const $btn: ViewStyle = {
   backgroundColor: colors.palette.primary600,
   borderWidth: 0,
   borderRadius: spacing.xs,
+}
+
+const $avatar: ImageStyle = {
+  width: 100,
+  height: 100,
+  borderRadius: 50,
+  marginTop: spacing.lg,
+}
+
+const $avatarContainer: ViewStyle = {
+  alignItems: "center",
 }

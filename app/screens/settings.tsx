@@ -1,12 +1,13 @@
 import { observer } from "mobx-react-lite"
 import React, { FC } from "react"
-import { View, ViewStyle, TouchableOpacity } from "react-native"
+import { View, ViewStyle, TouchableOpacity, Image, ImageStyle } from "react-native"
 
 import { Text, Screen, Icon, IconTypes } from "app/components"
 import layout from "app/utils/layout"
 
 import { SettingsScreenProps, SettingsStackParamList } from "../navigators/types"
 import { colors, spacing } from "../theme"
+import { useStores } from "app/models"
 
 interface GeneralLinkType {
   title: string
@@ -70,15 +71,23 @@ const aboutLinks: GeneralLinkType[] = [
 
 export const SettingsScreen: FC<SettingsScreenProps<"Settings">> = observer(
   function SettingsScreen({ navigation }) {
+    const { userStore } = useStores()
     return (
       <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={$container}>
         <Text text="Settings" preset="subheading" size="xl" />
         <View style={$topContainer()}>
-          <Icon icon="avatar" />
+          <Image
+            source={
+              userStore.avatar
+                ? { uri: userStore.avatar }
+                : require("../../assets/images/user-image.png")
+            }
+            style={$avatar}
+          />
           <View style={$userInfosContainer}>
             <View>
-              <Text text="El Hadji Malick Seck" preset="subheading" />
-              <Text text="elhadjimalick@gmail.com" size="xs" style={{ color: colors.textDim }} />
+              <Text text={userStore.fullName} preset="subheading" />
+              <Text text={userStore.email} size="xs" style={{ color: colors.textDim }} />
             </View>
             <Icon
               icon="pencil"
@@ -191,6 +200,12 @@ const $userInfosContainer: ViewStyle = {
   justifyContent: "space-between",
   alignItems: "center",
   width: layout.window.width * 0.65,
+}
+
+const $avatar: ImageStyle = {
+  width: 50,
+  height: 50,
+  borderRadius: 25,
 }
 
 const $generalContainer: ViewStyle = {
