@@ -1,6 +1,7 @@
 import { useScrollToTop } from "@react-navigation/native"
 import { StatusBar, StatusBarProps } from "expo-status-bar"
 import React, { useRef, useState } from "react"
+import { observer } from "mobx-react-lite"
 import {
   KeyboardAvoidingView,
   KeyboardAvoidingViewProps,
@@ -13,6 +14,7 @@ import {
   ViewStyle,
 } from "react-native"
 import { colors } from "../theme"
+import { useStores } from "../models"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 
 interface BaseScreenProps {
@@ -225,15 +227,11 @@ function ScreenWithScrolling(props: ScreenProps) {
  * @param {ScreenProps} props - The props for the `Screen` component.
  * @returns {JSX.Element} The rendered `Screen` component.
  */
-export function Screen(props: ScreenProps) {
-  const {
-    backgroundColor = colors.background,
-    KeyboardAvoidingViewProps,
-    keyboardOffset = 0,
-    safeAreaEdges,
-    StatusBarProps,
-    statusBarStyle = "dark",
-  } = props
+export const Screen = observer(function Screen(props: ScreenProps) {
+  const { KeyboardAvoidingViewProps, keyboardOffset = 0, safeAreaEdges, StatusBarProps } = props
+  const { settingsStore } = useStores()
+  const statusBarStyle = props.statusBarStyle ?? (settingsStore.isDarkMode ? "light" : "dark")
+  const backgroundColor = props.backgroundColor ?? colors.background
 
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges)
 
@@ -255,7 +253,7 @@ export function Screen(props: ScreenProps) {
       </KeyboardAvoidingView>
     </View>
   )
-}
+})
 
 const $containerStyle: ViewStyle = {
   flex: 1,
