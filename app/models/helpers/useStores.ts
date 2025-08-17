@@ -8,6 +8,9 @@ const _rootStore = RootStoreModel.create({
     habits: [],
     checkIns: [],
   },
+  settingsStore: {
+    isDarkMode: false,
+  },
 })
 
 // ✅ Shared context for app-wide store access

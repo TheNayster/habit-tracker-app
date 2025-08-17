@@ -1,7 +1,5 @@
 // TODO: write documentation for colors and palette in own markdown file and add links from here
 
-import { Appearance } from "react-native"
-
 const lightPalette = {
   neutral100: "#FFFFFF",
   neutral200: "#F4F2F1",
@@ -80,54 +78,65 @@ const darkPalette = {
   overlay50: "rgba(25, 16, 21, 0.5)",
 } as const
 
-const colorScheme = Appearance.getColorScheme() ?? "light"
-const palette = colorScheme === "dark" ? darkPalette : lightPalette
+let colorScheme: "light" | "dark" = "light"
 
-export const colors = {
-  /**
-   * The palette is available to use, but prefer using the name.
-   * This is only included for rare, one-off cases. Try to use
-   * semantic names as much as possible.
-   */
-  palette,
-  /**
-   * A helper for making something see-thru.
-   */
-  transparent: "rgba(0, 0, 0, 0)",
-  /**
-   * The default text color in many components.
-   */
-  text: colorScheme === "dark" ? palette.neutral900 : palette.neutral800,
-  /**
-   * Secondary text information.
-   */
-  textDim: colorScheme === "dark" ? palette.neutral700 : palette.neutral600,
-  /**
-   * The default color of the screen background.
-   */
-  background: colorScheme === "dark" ? palette.neutral100 : palette.neutral200,
-  /**
-   * The default border color.
-   */
-  border: colorScheme === "dark" ? palette.neutral300 : palette.neutral400,
-  /**
-   * The main tinting color.
-   */
-  tint: palette.primary500,
-  /**
-   * A subtle color used for lines.
-   */
-  separator: colorScheme === "dark" ? palette.neutral300 : palette.neutral300,
-  /**
-   * Error messages.
-   */
-  error: palette.angry500,
-  /**
-   * Error Background.
-   */
-  errorBackground: palette.angry100,
-  /**
-   * Success messages
-   */
-  success: palette.success,
+const buildColors = (scheme: "light" | "dark") => {
+  const palette = scheme === "dark" ? darkPalette : lightPalette
+  return {
+    /**
+     * The palette is available to use, but prefer using the name.
+     * This is only included for rare, one-off cases. Try to use
+     * semantic names as much as possible.
+     */
+    palette,
+    /**
+     * A helper for making something see-thru.
+     */
+    transparent: "rgba(0, 0, 0, 0)",
+    /**
+     * The default text color in many components.
+     */
+    text: scheme === "dark" ? palette.neutral900 : palette.neutral800,
+    /**
+     * Secondary text information.
+     */
+    textDim: scheme === "dark" ? palette.neutral700 : palette.neutral600,
+    /**
+     * The default color of the screen background.
+     */
+    background: scheme === "dark" ? palette.neutral100 : palette.neutral200,
+    /**
+     * The default border color.
+     */
+    border: scheme === "dark" ? palette.neutral300 : palette.neutral400,
+    /**
+     * The main tinting color.
+     */
+    tint: palette.primary500,
+    /**
+     * A subtle color used for lines.
+     */
+    separator: scheme === "dark" ? palette.neutral300 : palette.neutral300,
+    /**
+     * Error messages.
+     */
+    error: palette.angry500,
+    /**
+     * Error Background.
+     */
+    errorBackground: palette.angry100,
+    /**
+     * Success messages
+     */
+    success: palette.success,
+  }
 }
+
+export let colors = buildColors(colorScheme)
+
+export const setColorScheme = (scheme: "light" | "dark") => {
+  colorScheme = scheme
+  colors = buildColors(scheme)
+}
+
+export const getColorScheme = () => colorScheme

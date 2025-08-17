@@ -1,7 +1,7 @@
 import { colors, spacing } from "app/theme"
 import { ViewStyle } from "react-native"
 
-export const $tabBarStyles: ViewStyle = {
+export const $tabBarStyles = (): ViewStyle => ({
   position: "absolute",
   bottom: 25,
   left: 30,
@@ -16,4 +16,4 @@ export const $tabBarStyles: ViewStyle = {
   shadowOpacity: 0.25,
   shadowRadius: 3.84,
   elevation: 5,
-}
+})
