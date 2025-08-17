@@ -2,9 +2,8 @@ import { observer } from "mobx-react-lite"
 import React, { FC } from "react"
 import { View, ViewStyle, TouchableOpacity } from "react-native"
 
-import { Text, Screen, Icon, Toggle, IconTypes } from "app/components"
+import { Text, Screen, Icon, IconTypes } from "app/components"
 import layout from "app/utils/layout"
-import { useStores } from "app/models"
 
 import { SettingsScreenProps, SettingsStackParamList } from "../navigators/types"
 import { colors, spacing } from "../theme"
@@ -154,37 +153,15 @@ interface LinkProps extends GeneralLinkType {
 
 export const Link = observer(function Link(props: LinkProps) {
   const { icon, title, length, index, handleClick } = props
-  const { settingsStore } = useStores()
-
-  const isDarkModeItem = title === "Dark Mode"
 
   return (
     <View style={{ gap: spacing.xs }}>
-      <TouchableOpacity
-        style={$generalLink}
-        onPress={isDarkModeItem ? undefined : handleClick}
-        accessibilityRole={isDarkModeItem ? undefined : "button"}
-      >
+      <TouchableOpacity style={$generalLink} onPress={handleClick} accessibilityRole="button">
         <View style={$generalName}>
           <Icon icon={icon} />
           <Text text={title} />
         </View>
-        {isDarkModeItem ? (
-          <Toggle
-            variant="switch"
-            accessibilityLabel="Toggle dark mode"
-            value={settingsStore.isDarkMode}
-            onValueChange={settingsStore.setDarkMode}
-            inputInnerStyle={{
-              backgroundColor: colors.palette.neutral100,
-            }}
-            inputOuterStyle={{
-              backgroundColor: colors.palette.neutral400,
-            }}
-          />
-        ) : (
-          <Icon icon="caretRight" />
-        )}
+        <Icon icon="caretRight" />
       </TouchableOpacity>
       {length !== (index ?? 0) + 1 && <View style={$separator()} />}
     </View>
