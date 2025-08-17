@@ -20,6 +20,7 @@ import DateTimePicker from "@react-native-community/datetimepicker"
 import Toast from "react-native-toast-message"
 import * as Notifications from "expo-notifications"
 import EmojiPicker from "rn-emoji-keyboard"
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 
 export const CreateHabitScreen = observer(function CreateHabitScreen() {
   const { habitStore } = useStores()
@@ -31,7 +32,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
   const [tempTime, setTempTime] = useState(new Date())
   const [showTimeModal, setShowTimeModal] = useState(false)
   const [repeatDays, setRepeatDays] = useState<string[]>([])
-  const [dailyTarget, setDailyTarget] = useState("1")
+  const [dailyTarget, setDailyTarget] = useState(1)
   const [notificationEnabled, setNotificationEnabled] = useState(false)
   const [notificationTimes, setNotificationTimes] = useState<Date[]>([])
   const [editingTimeIndex, setEditingTimeIndex] = useState<number | null>(null)
@@ -43,7 +44,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
     setTempTime(new Date())
     setShowTimeModal(false)
     setRepeatDays([])
-    setDailyTarget("1")
+    setDailyTarget(1)
     setNotificationEnabled(false)
     setNotificationTimes([])
     setEditingTimeIndex(null)
@@ -75,6 +76,9 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
       setRepeatDays([...repeatDays, day])
     }
   }
+
+  const incrementTarget = () => setDailyTarget((prev) => Math.min(prev + 1, 99))
+  const decrementTarget = () => setDailyTarget((prev) => Math.max(prev - 1, 1))
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
@@ -118,7 +122,7 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
       time: notificationTimes.length > 0 ? formatTime(notificationTimes[0]) : null,
       finished: false,
       repeatDays,
-      dailyTarget: parseInt(dailyTarget),
+      dailyTarget,
       notificationIds,
     })
 
@@ -335,31 +339,15 @@ export const CreateHabitScreen = observer(function CreateHabitScreen() {
 
       <View style={{ marginBottom: spacing.lg, alignSelf: "flex-start" }}>
         <Text text="How many times per day?" />
-        <TextInput
-          value={dailyTarget}
-          onChangeText={(text) => {
-            const numeric = text.replace(/[^0-9]/g, "")
-            if (numeric === "") {
-              setDailyTarget("")
-              return
-            }
-            const clamped = Math.max(1, Math.min(99, parseInt(numeric)))
-            setDailyTarget(clamped.toString())
-          }}
-          keyboardType="numeric"
-          maxLength={2}
-          placeholder="e.g. 1"
-          style={{
-            width: 80,
-            borderColor: colors.border,
-            borderWidth: 1,
-            borderRadius: 8,
-            padding: 10,
-            marginTop: spacing.xs,
-            color: colors.text,
-            textAlign: "center",
-          }}
-        />
+        <View style={{ flexDirection: "row", alignItems: "center", marginTop: spacing.xs, gap: spacing.md }}>
+          <TouchableOpacity onPress={decrementTarget}>
+            <MaterialCommunityIcons name="minus-circle-outline" size={24} color={colors.text} />
+          </TouchableOpacity>
+          <Text text={dailyTarget.toString()} style={{ color: colors.text }} />
+          <TouchableOpacity onPress={incrementTarget}>
+            <MaterialCommunityIcons name="plus-circle-outline" size={24} color={colors.text} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <TouchableOpacity
