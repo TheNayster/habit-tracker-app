@@ -101,7 +101,7 @@ const Habit = observer(function Habit({ task, navigation }: HabitProps) {
 
   useEffect(() => {
     navigation.getParent()?.setOptions({
-      tabBarStyle: isSheetOpen ? { display: "none" } : $tabBarStyles,
+      tabBarStyle: isSheetOpen ? { display: "none" } : $tabBarStyles(),
     })
   }, [isSheetOpen])
 
