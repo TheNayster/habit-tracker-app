@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 import { View, ViewStyle, TouchableOpacity, Image, ImageStyle } from "react-native"
 
 import { Text, Screen, Icon, IconTypes } from "app/components"
@@ -70,8 +70,17 @@ const aboutLinks: GeneralLinkType[] = [
 ]
 
 export const SettingsScreen: FC<SettingsScreenProps<"Settings">> = observer(
-  function SettingsScreen({ navigation }) {
+  function SettingsScreen({ navigation, route }) {
     const { userStore } = useStores()
+    const to = route.params?.to
+
+    useEffect(() => {
+      if (to) {
+        navigation.navigate(to)
+        navigation.setParams({ to: undefined })
+      }
+    }, [to, navigation])
+
     return (
       <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={$container}>
         <Text text="Settings" preset="subheading" size="xl" />

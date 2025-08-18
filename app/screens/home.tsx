@@ -68,8 +68,10 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
             <TouchableOpacity
               onPress={() => {
                 const parent = navigation.getParent()
-                parent?.navigate("SettingsStack")
-                parent?.navigate("SettingsStack", { screen: "PersonalInfos" })
+                parent?.navigate("SettingsStack", {
+                  screen: "Settings",
+                  params: { to: "PersonalInfos" },
+                })
               }}
             >
               <Image
