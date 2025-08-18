@@ -32,11 +32,11 @@ const DayCard = ({ day, date, progress }: { day: string; date: string; progress:
         width: 32,
         height: 32,
         borderRadius: 16,
-        backgroundColor: colors.palette.neutral200,
+        backgroundColor: progress > 0 ? colors.palette.secondary100 : colors.palette.neutral200,
         alignItems: "center",
         justifyContent: "center",
-        borderWidth: progress > 0 ? 2 : 0,
-        borderColor: colors.palette.primary500,
+        borderWidth: 2,
+        borderColor: progress > 0 ? colors.palette.primary500 : "transparent",
       }}
     >
       <Text text={date} size="xs" />
