@@ -51,112 +51,6 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
     { value: remainingPercent, color: colors.palette.accent500 },
   ]
 
-  const barData = [
-    {
-      value: 40,
-      label: "Jan",
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: { color: "gray" },
-      frontColor: "#177AD5",
-    },
-    { value: 20, frontColor: "#ED6665" },
-    {
-      value: 50,
-      label: "Feb",
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: { color: "gray" },
-      frontColor: "#177AD5",
-    },
-    { value: 40, frontColor: "#ED6665" },
-    {
-      value: 75,
-      label: "Mar",
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: { color: "gray" },
-      frontColor: "#177AD5",
-    },
-    { value: 25, frontColor: "#ED6665" },
-    {
-      value: 30,
-      label: "Apr",
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: { color: "gray" },
-      frontColor: "#177AD5",
-    },
-    { value: 20, frontColor: "#ED6665" },
-    {
-      value: 60,
-      label: "May",
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: { color: "gray" },
-      frontColor: "#177AD5",
-    },
-    { value: 40, frontColor: "#ED6665" },
-    {
-      value: 65,
-      label: "Jun",
-      spacing: 2,
-      labelWidth: 30,
-      labelTextStyle: { color: "gray" },
-      frontColor: "#177AD5",
-    },
-    { value: 30, frontColor: "#ED6665" },
-  ]
-
-  const renderTitle = () => {
-    return (
-      <View style={{ gap: spacing.lg, marginVertical: spacing.xl }}>
-        <Text text="Habits Comparisons" preset="formLabel" />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-          }}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.md }}>
-            <View
-              style={{
-                height: 12,
-                width: 12,
-                borderRadius: 6,
-                backgroundColor: "#177AD5",
-              }}
-            />
-            <Text
-              style={{
-                color: colors.palette.neutral600,
-              }}
-            >
-              Current month
-            </Text>
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.md }}>
-            <View
-              style={{
-                height: 12,
-                width: 12,
-                borderRadius: 6,
-                backgroundColor: "#ED6665",
-              }}
-            />
-            <Text
-              style={{
-                color: colors.palette.neutral600,
-              }}
-            >
-              Last month
-            </Text>
-          </View>
-        </View>
-      </View>
-    )
-  }
-
   const renderDot = (color: string) => {
     return <View style={[$dotStyle, { backgroundColor: color }]} />
   }
@@ -263,23 +157,6 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
           />
           <View>{renderLegendComponent()}</View>
         </View>
-      </View>
-
-      <View style={{}}>
-        {renderTitle()}
-        <BarChart
-          data={barData}
-          barWidth={8}
-          spacing={24}
-          roundedTop
-          roundedBottom
-          hideRules
-          xAxisThickness={0}
-          yAxisThickness={0}
-          yAxisTextStyle={{ color: colors.textDim }}
-          noOfSections={3}
-          maxValue={75}
-        />
       </View>
     </Screen>
   )
