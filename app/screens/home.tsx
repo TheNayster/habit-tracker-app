@@ -9,6 +9,7 @@ import {
   UIManager,
   Platform,
   Animated,
+  PlatformColor,
 } from "react-native"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { Text, Screen } from "app/components"
@@ -24,6 +25,8 @@ const COLORS = ["#FFFF00", "#99FF99", "#E0FFFF", "#FFDAB9", "#EFEFEF"]
 
 if (Platform.OS === "android") UIManager.setLayoutAnimationEnabledExperimental?.(true)
 
+const accentColor = Platform.OS === "ios" ? PlatformColor("systemBlue") : "#0A84FF"
+
 const DayCard = ({ day, date, progress }: { day: string; date: string; progress: number }) => (
   <View style={{ gap: 8, alignItems: "center" }}>
     <Text text={day} />
@@ -32,14 +35,16 @@ const DayCard = ({ day, date, progress }: { day: string; date: string; progress:
         width: 32,
         height: 32,
         borderRadius: 16,
-        backgroundColor: progress > 0 ? colors.palette.secondary100 : colors.palette.neutral200,
+        backgroundColor: progress > 0 ? accentColor : colors.palette.neutral200,
         alignItems: "center",
         justifyContent: "center",
-        borderWidth: 2,
-        borderColor: progress > 0 ? colors.palette.primary500 : "transparent",
       }}
     >
-      <Text text={date} size="xs" />
+      <Text
+        text={date}
+        size="xs"
+        style={{ color: progress > 0 ? colors.palette.neutral100 : colors.text }}
+      />
     </View>
   </View>
 )
