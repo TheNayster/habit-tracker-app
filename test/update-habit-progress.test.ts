@@ -1,4 +1,3 @@
-import * as Notifications from "expo-notifications"
 import { HabitStore } from "../app/models/HabitStore"
 
 jest.mock("expo-notifications", () => ({

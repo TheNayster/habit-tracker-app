@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { View, Text, StyleSheet } from "react-native"
 import { observer } from "mobx-react-lite"
-import { DateData } from "react-native-calendars"
+import { DateData, Calendar } from "react-native-calendars"
 import { useStores } from "app/models"
 import { Screen } from "app/components"
 import { spacing, colors } from "app/theme"
-import { Calendar } from "react-native-calendars"
 
 export const CalendarScreen = observer(function CalendarScreen() {
   const { habitStore } = useStores()
@@ -94,20 +93,20 @@ const $habitList = {
 }
 
 const styles = StyleSheet.create({
+  habit: {
+    color: colors.text,
+    fontSize: 14,
+    paddingVertical: 4,
+  },
   heading: {
+    color: colors.text,
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 8,
-    color: colors.text,
-  },
-  habit: {
-    fontSize: 14,
-    paddingVertical: 4,
-    color: colors.text,
   },
   noHabits: {
+    color: colors.textDim,
     fontSize: 14,
     fontStyle: "italic",
-    color: colors.textDim,
   },
 })

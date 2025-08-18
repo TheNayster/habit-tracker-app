@@ -26,6 +26,7 @@ export const useInitialRootStore = (callback?: () => void | Promise<void>) => {
     ;(async () => {
       await setupRootStore() // no longer needs unsubscribe
       if (__DEV__) {
+        // eslint-disable-next-line reactotron/no-tron-in-production
         console.tron.trackMstNode?.(rootStore)
       }
 

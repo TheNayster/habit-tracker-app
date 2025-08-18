@@ -27,7 +27,7 @@ export const EditPasswordScreen: FC<SettingsScreenProps<"EditPassword">> = obser
             label="Current password"
             value={infos.current_password}
             secureTextEntry
-            onChangeText={(text) => setInfos({ ...infos, ["current_password"]: text })}
+            onChangeText={(text) => setInfos({ ...infos, current_password: text })}
             inputWrapperStyle={{
               borderRadius: spacing.xs,
               backgroundColor: colors.palette.neutral100,
@@ -37,7 +37,7 @@ export const EditPasswordScreen: FC<SettingsScreenProps<"EditPassword">> = obser
             label="New password"
             secureTextEntry
             value={infos.new_password}
-            onChangeText={(text) => setInfos({ ...infos, ["new_password"]: text })}
+            onChangeText={(text) => setInfos({ ...infos, new_password: text })}
             inputWrapperStyle={{
               borderRadius: spacing.xs,
               backgroundColor: colors.palette.neutral100,
@@ -47,7 +47,7 @@ export const EditPasswordScreen: FC<SettingsScreenProps<"EditPassword">> = obser
             label="Confirm new password"
             secureTextEntry
             value={infos.confirm_new_password}
-            onChangeText={(text) => setInfos({ ...infos, ["confirm_new_password"]: text })}
+            onChangeText={(text) => setInfos({ ...infos, confirm_new_password: text })}
             inputWrapperStyle={{
               borderRadius: spacing.xs,
               backgroundColor: colors.palette.neutral100,
