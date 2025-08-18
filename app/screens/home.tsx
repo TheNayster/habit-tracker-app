@@ -24,23 +24,22 @@ const COLORS = ["#FFFF00", "#99FF99", "#E0FFFF", "#FFDAB9", "#EFEFEF"]
 
 if (Platform.OS === "android") UIManager.setLayoutAnimationEnabledExperimental?.(true)
 
-const DayCard = ({ day, date, progress }: { day: string; date: string; progress: number }) => (
-  <View style={{ gap: 8, alignItems: "center" }}>
-    <Text text={day} />
-    <View
-      style={{
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        backgroundColor: progress > 0 ? colors.palette.secondary100 : colors.palette.neutral200,
-        alignItems: "center",
-        justifyContent: "center",
-        borderWidth: 2,
-        borderColor: progress > 0 ? colors.palette.primary500 : "transparent",
-      }}
-    >
-      <Text text={date} size="xs" />
-    </View>
+const DayCard = ({ date, progress }: { date: string; progress: number }) => (
+  <View
+    style={{
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: progress > 0 ? colors.palette.secondary500 : undefined,
+    }}
+  >
+    <Text
+      text={date}
+      size="xs"
+      style={{ color: progress > 0 ? colors.palette.neutral100 : colors.palette.neutral400 }}
+    />
   </View>
 )
 
@@ -81,7 +80,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
 
         <View style={{ flexDirection: "row", gap: 18 }}>
           {habitStore.days.map((d, i) => (
-            <DayCard key={`day-${i}`} day={d.day} date={d.date} progress={d.progress} />
+            <DayCard key={`day-${i}`} date={d.date} progress={d.progress} />
           ))}
         </View>
 
