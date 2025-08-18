@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import React, { FC } from "react"
+import React, { FC, useMemo } from "react"
 import { TextStyle, View, ViewStyle, TouchableOpacity } from "react-native"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { BarChart, barDataItem, PieChart, pieDataItem } from "react-native-gifted-charts"
@@ -26,24 +26,37 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
 
   const totalHabits = habitStore.habits.length
 
-  const barChartData: barDataItem[] = habitStore.days.map((d) => ({
+  const daysToShow = useMemo(() => {
+    switch (filter) {
+      case "D":
+        return 1
+      case "W":
+        return 7
+      case "M":
+        return 30
+      case "3M":
+        return 90
+      case "6M":
+        return 180
+      case "Y":
+        return 365
+      default:
+        return 7
+    }
+  }, [filter])
+
+  const barChartData: barDataItem[] = habitStore.getDays(daysToShow).map((d) => ({
     value: totalHabits > 0 ? (d.progress / totalHabits) * 1000 : 0,
     frontColor: colors.palette.primary600,
     gradientColor: colors.palette.primary100,
     label: d.day.charAt(0),
   }))
 
-  const totalActivities =
-    totalHabits > 0
-      ? Math.round(
-          (habitStore.days.reduce((sum, d) => sum + d.progress, 0) /
-            (totalHabits * habitStore.days.length)) *
-            100,
-        )
-      : 0
+  const totalTarget = habitStore.habits.reduce((sum, h) => sum + h.dailyTarget, 0)
+  const totalProgress = habitStore.habits.reduce((sum, h) => sum + h.progress, 0)
+  const totalActivities = totalTarget > 0 ? Math.round((totalProgress / totalTarget) * 100) : 0
 
-  const completedHabits = habitStore.habits.filter((h) => h.progress >= h.dailyTarget).length
-  const completedPercent = totalHabits > 0 ? (completedHabits / totalHabits) * 100 : 0
+  const completedPercent = totalTarget > 0 ? (totalProgress / totalTarget) * 100 : 0
   const remainingPercent = 100 - completedPercent
 
   const pieData: pieDataItem[] = [
