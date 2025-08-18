@@ -3,6 +3,7 @@ import React, { FC, useMemo } from "react"
 import { TextStyle, View, ViewStyle, TouchableOpacity } from "react-native"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { BarChart, barDataItem, PieChart, pieDataItem } from "react-native-gifted-charts"
+import { subDays } from "date-fns"
 
 import { Text, Screen } from "app/components"
 import layout from "app/utils/layout"
@@ -63,6 +64,35 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
     { value: completedPercent, color: colors.palette.secondary500, focused: true },
     { value: remainingPercent, color: colors.palette.accent500 },
   ]
+
+  const rangeToDays: Record<string, number> = {
+    D: 1,
+    W: 7,
+    M: 30,
+    "3M": 90,
+    "6M": 180,
+    Y: 365,
+  }
+
+  const comparisonBarData: barDataItem[] = (() => {
+    const days = rangeToDays[filter] ?? 1
+    const startDate = subDays(new Date(), days - 1)
+    const data = habitStore.habits.map((h) => {
+      let value = 0
+      if (h.lastUpdated) {
+        const last = new Date(h.lastUpdated)
+        if (last >= startDate) value = h.progress
+      }
+      return {
+        value,
+        label: h.name,
+        frontColor: colors.palette.primary600,
+      }
+    })
+    return data.length > 0 ? data : [{ value: 0, label: "", frontColor: colors.palette.primary600 }]
+  })()
+
+  const comparisonMax = Math.max(...comparisonBarData.map((d) => d.value), 1)
 
   const renderDot = (color: string) => {
     return <View style={[$dotStyle, { backgroundColor: color }]} />
@@ -170,6 +200,23 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
           />
           <View>{renderLegendComponent()}</View>
         </View>
+      </View>
+
+      <View>
+        <Text text="Habits Comparison" preset="formLabel" style={{ marginVertical: spacing.xl }} />
+        <BarChart
+          data={comparisonBarData}
+          barWidth={20}
+          spacing={spacing.md}
+          roundedTop
+          roundedBottom
+          hideRules
+          xAxisThickness={0}
+          yAxisThickness={0}
+          yAxisTextStyle={{ color: colors.textDim }}
+          noOfSections={3}
+          maxValue={comparisonMax}
+        />
       </View>
     </Screen>
   )
