@@ -9,6 +9,7 @@ import layout from "app/utils/layout"
 
 import { colors, spacing } from "../theme"
 import { StatisticsScreenProps } from "app/navigators/types"
+import { useStores } from "app/models/helpers/useStores"
 
 const filters = [
   { title: "Day", abbr: "D", id: 1 },
@@ -21,59 +22,33 @@ const filters = [
 
 export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function StatisticsScreen() {
   const [filter, setFilter] = React.useState("D")
+  const { habitStore } = useStores()
 
-  const data: barDataItem[] = [
-    {
-      value: 200,
-      frontColor: colors.palette.primary600,
-      gradientColor: colors.palette.primary100,
-      label: "S",
-    },
-    {
-      value: 450,
-      frontColor: colors.palette.primary600,
-      gradientColor: colors.palette.primary100,
-      label: "M",
-    },
-    {
-      value: 600,
-      frontColor: colors.palette.primary600,
-      gradientColor: colors.palette.primary100,
-      label: "T",
-    },
-    {
-      value: 990,
-      frontColor: colors.palette.primary600,
-      gradientColor: colors.palette.primary100,
-      label: "W",
-    },
-    {
-      value: 820,
-      frontColor: colors.palette.primary600,
-      gradientColor: colors.palette.primary100,
-      label: "T",
-    },
-    {
-      value: 480,
-      frontColor: colors.palette.primary600,
-      gradientColor: colors.palette.primary100,
-      label: "F",
-    },
-    {
-      value: 1000,
-      frontColor: colors.palette.primary600,
-      // gradientColor: colors.palette.primary100,
-      label: "S",
-    },
-  ]
+  const totalHabits = habitStore.habits.length
+
+  const barChartData: barDataItem[] = habitStore.days.map((d) => ({
+    value: totalHabits > 0 ? (d.progress / totalHabits) * 1000 : 0,
+    frontColor: colors.palette.primary600,
+    gradientColor: colors.palette.primary100,
+    label: d.day.charAt(0),
+  }))
+
+  const totalActivities =
+    totalHabits > 0
+      ? Math.round(
+          (habitStore.days.reduce((sum, d) => sum + d.progress, 0) /
+            (totalHabits * habitStore.days.length)) *
+            100,
+        )
+      : 0
+
+  const completedHabits = habitStore.habits.filter((h) => h.progress >= h.dailyTarget).length
+  const completedPercent = totalHabits > 0 ? (completedHabits / totalHabits) * 100 : 0
+  const remainingPercent = 100 - completedPercent
 
   const pieData: pieDataItem[] = [
-    {
-      value: 80,
-      color: colors.palette.secondary500,
-      focused: true,
-    },
-    { value: 20, color: colors.palette.accent500 },
+    { value: completedPercent, color: colors.palette.secondary500, focused: true },
+    { value: remainingPercent, color: colors.palette.accent500 },
   ]
 
   const barData = [
@@ -191,11 +166,11 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
       <View style={$legendContainer}>
         <View style={$legend}>
           {renderDot(colors.palette.secondary500)}
-          <Text style={{}}>Excellent: 80%</Text>
+          <Text style={{}}>Completed: {completedPercent.toFixed(0)}%</Text>
         </View>
         <View style={$legend}>
           {renderDot(colors.palette.accent500)}
-          <Text style={{}}>Okay: 20%</Text>
+          <Text style={{}}>Remaining: {remainingPercent.toFixed(0)}%</Text>
         </View>
       </View>
     )
@@ -223,11 +198,11 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
       <View>
         <View style={$barChartOverviewContainer}>
           <Text text="Total Activities" preset="formLabel" />
-          <Text text="87%" preset="heading" />
+          <Text text={`${totalActivities}%`} preset="heading" />
         </View>
         <View style={$barChartContainer}>
           <BarChart
-            data={data}
+            data={barChartData}
             barWidth={20}
             width={layout.window.width * 0.77}
             height={layout.window.height * 0.3}
@@ -273,12 +248,12 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
               return (
                 <View style={$pieChartLabelContainer}>
                   <Text
-                    text="80%"
+                    text={`${completedPercent.toFixed(0)}%`}
                     preset="subheading"
                     style={{ color: colors.palette.neutral100 }}
                   />
                   <Text
-                    text="Excellent"
+                    text="Completed"
                     preset="formLabel"
                     style={{ color: colors.palette.neutral100 }}
                   />
