@@ -66,7 +66,11 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
         >
           <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
             <TouchableOpacity
-              onPress={() => navigation.navigate("SettingsStack", { screen: "PersonalInfos" })}
+              onPress={() => {
+                const parent = navigation.getParent()
+                parent?.navigate("SettingsStack")
+                parent?.navigate("SettingsStack", { screen: "PersonalInfos" })
+              }}
             >
               <Image
                 source={
