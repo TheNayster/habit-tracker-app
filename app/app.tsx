@@ -19,6 +19,7 @@ import { ViewStyle, View, Platform } from "react-native"
 import Toast from "react-native-toast-message"
 import * as Notifications from "expo-notifications"
 import { persistHabitStore } from "app/models/helpers/persistHabitStore"
+import { persistUserStore } from "app/models/helpers/persistUserStore"
 import { syncNotifications } from "app/utils/syncNotifications"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
@@ -72,6 +73,7 @@ const App = observer(function App(props: AppProps) {
   }) */
   const { rehydrated, rootStore } = useInitialRootStore(() => {
     persistHabitStore(rootStore.habitStore)
+    persistUserStore(rootStore.userStore)
     syncNotifications(rootStore.habitStore)
 
     if (__DEV__) console.log("✅ RootStore ready. Hiding splash in 500ms")
