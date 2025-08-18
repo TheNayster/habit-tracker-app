@@ -38,18 +38,27 @@ export const HabitStore = types
     checkIns: types.optional(types.array(CheckInModel), []),
   })
   .views((store) => {
-    const getDays = (range: number): { day: string; date: string; progress: number }[] => {
+    const getDays = (
+      range: number,
+    ): { day: string; date: string; progress: number; total: number }[] => {
       const today = new Date()
       return Array.from({ length: range }).map((_, i) => {
         const date = subDays(today, range - 1 - i)
         const dateKey = format(date, "yyyy-MM-dd")
+        const dayShort = format(date, "EEE")
+        const total = store.habits.filter((h) => h.repeatDays.includes(dayShort)).length
         const progress = store.habits.reduce((sum, habit) => {
-          return habit.lastUpdated === dateKey && habit.progress > 0 ? sum + 1 : sum
+          const completed =
+            habit.repeatDays.includes(dayShort) &&
+            habit.lastUpdated === dateKey &&
+            habit.progress >= habit.dailyTarget
+          return completed ? sum + 1 : sum
         }, 0)
         return {
-          day: format(date, "EEE"),
+          day: dayShort,
           date: format(date, "d"),
           progress,
+          total,
         }
       })
     }
