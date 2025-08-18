@@ -3,16 +3,28 @@ import { CompositeScreenProps, NavigatorScreenParams } from "@react-navigation/n
 import { StackScreenProps } from "@react-navigation/stack"
 
 export type HomeStackParamList = {
-  Home: undefined;
-  CreateHabit: undefined;
-  CreateNewHabit: undefined;
-  EditHabit: { habitId: string };
-  Calendar: undefined;
-};
-
+  Home: undefined
+  CreateHabit: undefined
+  CreateNewHabit: undefined
+  EditHabit: { habitId: string }
+  Calendar: undefined
+}
 
 export type SettingsStackParamList = {
-  Settings: undefined
+  Settings:
+    | {
+        to?:
+          | "PersonalInfos"
+          | "Notifications"
+          | "Security"
+          | "EditPassword"
+          | "Language"
+          | "AboutUs"
+          | "Rating"
+          | "Support"
+          | "EditPersonalInfos"
+      }
+    | undefined
   PersonalInfos: undefined
   Notifications: undefined
   Security: undefined
@@ -41,6 +53,5 @@ export type SettingsScreenProps<T extends keyof SettingsStackParamList> = Compos
   BottomTabScreenProps<TabParamList, "SettingsStack">,
   StackScreenProps<SettingsStackParamList, T>
 >
-
 
 export type HomeNavProps = HomeStackScreenProps<"Home">["navigation"]
