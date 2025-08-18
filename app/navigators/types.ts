@@ -11,20 +11,7 @@ export type HomeStackParamList = {
 }
 
 export type SettingsStackParamList = {
-  Settings:
-    | {
-        to?:
-          | "PersonalInfos"
-          | "Notifications"
-          | "Security"
-          | "EditPassword"
-          | "Language"
-          | "AboutUs"
-          | "Rating"
-          | "Support"
-          | "EditPersonalInfos"
-      }
-    | undefined
+  Settings: undefined
   PersonalInfos: undefined
   Notifications: undefined
   Security: undefined

@@ -126,6 +126,12 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
             name="SettingsStack"
             component={SettingsStack}
             options={{ unmountOnBlur: true }}
+            listeners={({ navigation }) => ({
+              tabPress: (e) => {
+                e.preventDefault()
+                navigation.navigate("SettingsStack", { screen: "Settings" })
+              },
+            })}
           />
         }
       </Tab.Navigator>
