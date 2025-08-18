@@ -42,10 +42,14 @@ export const HabitStore = types
       const today = new Date()
       return Array.from({ length: 7 }).map((_, i) => {
         const date = subDays(today, 6 - i)
+        const dateKey = format(date, "yyyy-MM-dd")
+        const progress = store.habits.reduce((sum, habit) => {
+          return habit.lastUpdated === dateKey && habit.progress > 0 ? sum + 1 : sum
+        }, 0)
         return {
           day: format(date, "EEE"),
           date: format(date, "d"),
-          progress: 0,
+          progress,
         }
       })
     },
