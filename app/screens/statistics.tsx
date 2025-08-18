@@ -3,7 +3,6 @@ import React, { FC, useMemo } from "react"
 import { TextStyle, View, ViewStyle, TouchableOpacity } from "react-native"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { BarChart, barDataItem, PieChart, pieDataItem } from "react-native-gifted-charts"
-import { subDays } from "date-fns"
 
 import { Text, Screen } from "app/components"
 import layout from "app/utils/layout"
@@ -11,6 +10,7 @@ import layout from "app/utils/layout"
 import { colors, spacing } from "../theme"
 import { StatisticsScreenProps } from "app/navigators/types"
 import { useStores } from "app/models/helpers/useStores"
+import { isTodayInRepeatDays } from "app/utils/date"
 
 const filters = [
   { title: "Day", abbr: "D", id: 1 },
@@ -24,8 +24,7 @@ const filters = [
 export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function StatisticsScreen() {
   const [filter, setFilter] = React.useState("D")
   const { habitStore } = useStores()
-
-  const totalHabits = habitStore.habits.length
+  const habitsToday = habitStore.habits.filter((h) => isTodayInRepeatDays(h.repeatDays))
 
   const daysToShow = useMemo(() => {
     switch (filter) {
@@ -47,14 +46,14 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
   }, [filter])
 
   const barChartData: barDataItem[] = habitStore.getDays(daysToShow).map((d) => ({
-    value: totalHabits > 0 ? (d.progress / totalHabits) * 1000 : 0,
+    value: d.total > 0 ? (d.progress / d.total) * 100 : 0,
     frontColor: colors.palette.primary600,
     gradientColor: colors.palette.primary100,
     label: d.day.charAt(0),
   }))
 
-  const totalTarget = habitStore.habits.reduce((sum, h) => sum + h.dailyTarget, 0)
-  const totalProgress = habitStore.habits.reduce((sum, h) => sum + h.progress, 0)
+  const totalTarget = habitsToday.reduce((sum, h) => sum + h.dailyTarget, 0)
+  const totalProgress = habitsToday.reduce((sum, h) => sum + h.progress, 0)
   const totalActivities = totalTarget > 0 ? Math.round((totalProgress / totalTarget) * 100) : 0
 
   const completedPercent = totalTarget > 0 ? (totalProgress / totalTarget) * 100 : 0
@@ -65,34 +64,16 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
     { value: remainingPercent, color: colors.palette.accent500 },
   ]
 
-  const rangeToDays: Record<string, number> = {
-    D: 1,
-    W: 7,
-    M: 30,
-    "3M": 90,
-    "6M": 180,
-    Y: 365,
-  }
+  const comparisonBarData: barDataItem[] =
+    habitsToday.length > 0
+      ? habitsToday.map((h) => ({
+          value: h.progress,
+          label: h.name,
+          frontColor: colors.palette.primary600,
+        }))
+      : [{ value: 0, label: "", frontColor: colors.palette.primary600 }]
 
-  const comparisonBarData: barDataItem[] = (() => {
-    const days = rangeToDays[filter] ?? 1
-    const startDate = subDays(new Date(), days - 1)
-    const data = habitStore.habits.map((h) => {
-      let value = 0
-      if (h.lastUpdated) {
-        const last = new Date(h.lastUpdated)
-        if (last >= startDate) value = h.progress
-      }
-      return {
-        value,
-        label: h.name,
-        frontColor: colors.palette.primary600,
-      }
-    })
-    return data.length > 0 ? data : [{ value: 0, label: "", frontColor: colors.palette.primary600 }]
-  })()
-
-  const comparisonMax = Math.max(...comparisonBarData.map((d) => d.value), 1)
+  const comparisonMax = Math.max(...habitsToday.map((h) => h.dailyTarget), 1)
 
   const renderDot = (color: string) => {
     return <View style={[$dotStyle, { backgroundColor: color }]} />
@@ -151,9 +132,9 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
             xAxisType={"dashed"}
             xAxisColor={colors.palette.neutral400}
             yAxisTextStyle={{ color: colors.textDim }}
-            stepValue={100}
-            maxValue={1000}
-            yAxisLabelTexts={["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"]}
+            stepValue={20}
+            maxValue={100}
+            yAxisLabelTexts={["0", "20", "40", "60", "80", "100"]}
             xAxisLabelTextStyle={$xAxisLabelText}
             yAxisLabelSuffix="%"
             showLine
@@ -214,7 +195,8 @@ export const StatisticsScreen: FC<StatisticsScreenProps> = observer(function Sta
           xAxisThickness={0}
           yAxisThickness={0}
           yAxisTextStyle={{ color: colors.textDim }}
-          noOfSections={3}
+          noOfSections={comparisonMax}
+          stepValue={1}
           maxValue={comparisonMax}
         />
       </View>
