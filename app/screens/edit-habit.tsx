@@ -115,7 +115,7 @@ export const EditHabitScreen = observer(function EditHabitScreen() {
 
   const confirmDeleteHabit = () => {
     if (!habit) return
-    Alert.alert("Delete Habit", `Are you sure you want to delete \"${habit.name}\"?`, [
+    Alert.alert("Delete Habit", `Are you sure you want to delete "${habit.name}"?`, [
       { text: "Cancel", style: "cancel" },
       {
         text: "Delete",
