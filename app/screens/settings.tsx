@@ -7,7 +7,7 @@ import layout from "app/utils/layout"
 
 import { SettingsScreenProps, SettingsStackParamList } from "../navigators/types"
 import { colors, spacing } from "../theme"
-import { useStores } from "app/models"
+import { useStores, clearUserData } from "app/models"
 
 interface GeneralLinkType {
   title: string
@@ -144,6 +144,7 @@ export const SettingsScreen: FC<SettingsScreenProps<"Settings">> = observer(
             icon="logout"
             title="Logout"
             handleClick={() => {
+              clearUserData(userStore)
               if (__DEV__) console.log("logout")
             }}
             length={1}

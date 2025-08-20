@@ -1,4 +1,5 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import * as secureStorage from "../utils/secureStorage"
 
 export const UserStore = types
   .model("UserStore", {
@@ -22,3 +23,17 @@ export const UserStore = types
 
 export interface UserStoreType extends Instance<typeof UserStore> {}
 export interface UserStoreSnapshot extends SnapshotOut<typeof UserStore> {}
+
+export async function clearUserData(store: UserStoreType) {
+  store.update({
+    fullName: "",
+    email: "",
+    bio: "",
+    twitter: "",
+    linkedin: "",
+    instagram: "",
+    facebook: "",
+    avatar: "",
+  })
+  await secureStorage.remove("user-store")
+}
