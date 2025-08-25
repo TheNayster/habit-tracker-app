@@ -13,6 +13,12 @@ test("load", async () => {
   expect(value).toEqual(JSON.parse(VALUE_STRING))
 })
 
+test("load returns null when key not found", async () => {
+  ;(AsyncStorage.getItem as jest.Mock).mockReturnValueOnce(Promise.resolve(null))
+  const value = await load("unknown")
+  expect(value).toBeNull()
+})
+
 test("loadString", async () => {
   const value = await loadString("something")
   expect(value).toEqual(VALUE_STRING)

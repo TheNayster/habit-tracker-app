@@ -37,8 +37,9 @@ export async function saveString(key: string, value: string): Promise<boolean> {
  */
 export async function load(key: string): Promise<unknown | null> {
   try {
-    const almostThere = await AsyncStorage.getItem(key)
-    return JSON.parse(almostThere ?? "")
+    const json = await AsyncStorage.getItem(key)
+    if (json == null) return null
+    return JSON.parse(json)
   } catch (e) {
     console.error(`Error loading data for key "${key}"`, e)
     return null
