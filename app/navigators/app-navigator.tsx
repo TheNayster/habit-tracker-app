@@ -89,6 +89,7 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
   return (
     <NavigationContainer ref={navigationRef} theme={DefaultTheme} {...props}>
       <Tab.Navigator
+        initialRouteName="HomeStack"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color }) => {
             let iconName: keyof (typeof MaterialIcons)["glyphMap"]
