@@ -18,6 +18,9 @@ export function persistHabitStore(storeInstance: typeof HabitStore.Type) {
     } else {
       console.warn("⚠️ No saved habitStore snapshot found.")
     }
+
+    // Ensure daily progress does not carry over to a new day
+    storeInstance.resetHabitsIfDateChanged()
   })
 
   onSnapshot(storeInstance, (snapshot) => {
